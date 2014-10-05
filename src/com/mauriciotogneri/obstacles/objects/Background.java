@@ -77,11 +77,11 @@ public class Background
 			this.polygon4.moveX(-value);
 		}
 	}
-
+	
 	public boolean collide(MainCharacter mainCharacter)
 	{
 		boolean result = false;
-
+		
 		if (GeometryUtils.collide(mainCharacter.getShape(), this.wallTop))
 		{
 			result = true;
