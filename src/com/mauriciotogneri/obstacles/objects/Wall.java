@@ -5,34 +5,25 @@ import com.mauriciotogneri.obstacles.shapes.Rectangle;
 
 public class Wall
 {
-	private float x;
-	
 	private final Rectangle rectangle;
-	
+
 	public Wall(float x, float y, float width, float height, int color)
 	{
-		this.x = x;
-		
 		this.rectangle = new Rectangle(x, y, width, height, color);
 	}
-
+	
 	public void update(float value)
 	{
-		this.x -= value;
-		
-		if (this.x < -20)
+		if ((this.rectangle.getX() + this.rectangle.getWidth()) < 0)
 		{
-			this.x = 120;
+			this.rectangle.setX(120);
 		}
-		
-		this.rectangle.setX(this.x);
+
+		this.rectangle.moveX(-value);
 	}
-	
+
 	public void draw(Renderer renderer)
 	{
-		if (this.rectangle != null)
-		{
-			this.rectangle.draw(renderer);
-		}
+		this.rectangle.draw(renderer);
 	}
 }
