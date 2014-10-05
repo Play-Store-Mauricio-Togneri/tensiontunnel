@@ -15,6 +15,8 @@ public class MainCharacter
 	private static final int MAX_ACCELERATION_UP = 50;
 	private static final int MAX_ACCELERATION_DOWN = 50;
 	
+	private static final int CHARACTER_SIZE = 3;
+	
 	public MainCharacter(float y)
 	{
 		this.y = y;
@@ -44,11 +46,11 @@ public class MainCharacter
 		{
 			this.y = 5;
 		}
-		else if ((this.y + 5) > (resolutionY - 5))
+		else if ((this.y + MainCharacter.CHARACTER_SIZE) > (resolutionY - 5))
 		{
-			this.y = (resolutionY - 10);
+			this.y = (resolutionY - 5 - MainCharacter.CHARACTER_SIZE);
 		}
 		
-		return new Square(20, this.y, 5, Color.YELLOW);
+		return new Square(20, this.y, MainCharacter.CHARACTER_SIZE, Color.YELLOW);
 	}
 }
