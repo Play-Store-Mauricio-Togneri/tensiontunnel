@@ -20,11 +20,16 @@ public class Game
 	private MainCharacter mainCharacter;
 	private Background background;
 	private final List<Wall> walls = new ArrayList<Wall>();
-	
-	private boolean started = false;
+
+	private Status status = Status.INIT;
 
 	private static final int BASE_SPEED = 30;
 	private static final int EXTRA_SPEED = 20;
+
+	private enum Status
+	{
+		INIT, RUNNING, COLLIDE
+	}
 
 	public Game(Context context)
 	{
@@ -38,7 +43,7 @@ public class Game
 			this.renderer = renderer;
 
 			this.mainCharacter = new MainCharacter(renderer.getResolutionY() / 2);
-			
+
 			this.background = new Background(renderer.getResolutionX(), renderer.getResolutionY());
 
 			this.walls.add(new Wall(60, 5, 10, 20, Color.argb(255, 90, 110, 120)));
@@ -47,20 +52,20 @@ public class Game
 	}
 
 	// ======================== UPDATE ====================== \\
-	
+
 	public void update(float delta, Input input, Renderer renderer)
 	{
-		if ((input.jumpPressed || input.advancePressed) && (!this.started))
+		if ((input.jumpPressed || input.advancePressed) && (this.status == Status.INIT))
 		{
-			this.started = true;
+			this.status = Status.RUNNING;
 			this.audioManager.playAudio(Resources.Music.MUSIC);
 		}
-		
-		if (this.started)
+
+		if (this.status == Status.RUNNING)
 		{
 			update(delta, input);
 		}
-		
+
 		draw(renderer);
 	}
 
@@ -71,8 +76,14 @@ public class Game
 		this.background.update(speed * 0.75f);
 		updateWalls(speed);
 		updateCharacter(delta, input);
+
+		if (this.background.collide(this.mainCharacter))
+		{
+			this.audioManager.playSound(Resources.Sounds.EXPLOSION);
+			this.status = Status.COLLIDE;
+		}
 	}
-	
+
 	private void updateWalls(float speed)
 	{
 		for (Wall wall : this.walls)
@@ -89,17 +100,17 @@ public class Game
 	private float getSpeed(float delta, Input input)
 	{
 		float result = Game.BASE_SPEED;
-		
+
 		if (input.advancePressed)
 		{
 			result += Game.EXTRA_SPEED;
 		}
-		
+
 		return (delta * result);
 	}
-	
+
 	// ======================== DRAW ====================== \\
-	
+
 	private void draw(Renderer renderer)
 	{
 		this.background.draw(renderer);
@@ -133,7 +144,7 @@ public class Game
 		{
 			this.audioManager.resumeAudio();
 		}
-		
+
 		if (this.renderer != null)
 		{
 			this.renderer.resume();
