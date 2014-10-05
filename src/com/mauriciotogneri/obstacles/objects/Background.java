@@ -31,8 +31,9 @@ public class Background
 	private static final int WALL_HEIGHT = 5;
 	
 	private static final int COLOR_WALL = Color.argb(255, 65, 65, 65);
-	private static final int COLOR_BASE = Color.argb(255, 0, 130, 180);
-	private static final int COLOR_SHAPES = Color.argb(255, 0, 135, 175);
+	
+	private static final int COLOR_BASE = Color.argb(255, 255, 110, 110);
+	private static final int COLOR_SHAPES = Color.argb(255, 250, 100, 100);
 	
 	public Background(int width, int height)
 	{

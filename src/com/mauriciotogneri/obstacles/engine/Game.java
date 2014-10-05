@@ -6,17 +6,17 @@ import com.mauriciotogneri.obstacles.input.Input;
 import com.mauriciotogneri.obstacles.objects.Background;
 import com.mauriciotogneri.obstacles.objects.Enemy;
 import com.mauriciotogneri.obstacles.objects.MainCharacter;
-import com.mauriciotogneri.obstacles.shapes.Shape;
-import com.mauriciotogneri.obstacles.shapes.Square;
 
 public class Game
 {
 	private Renderer renderer;
 	
-	private MainCharacter character;
+	private MainCharacter mainCharacter;
 	private Background background;
 	private final List<Enemy> enemies = new ArrayList<Enemy>();
 
+	private boolean started = false;
+	
 	private static final int BASE_SPEED = 30;
 	private static final int EXTRA_SPEED = 20;
 	
@@ -26,11 +26,12 @@ public class Game
 		{
 			this.renderer = renderer;
 			
-			this.character = new MainCharacter(renderer.getResolutionY() / 2);
+			this.mainCharacter = new MainCharacter(renderer.getResolutionY() / 2);
 
 			this.background = new Background(renderer.getResolutionX(), renderer.getResolutionY());
 			
-			this.enemies.add(new Enemy(120, 5, 10, 20));
+			this.enemies.add(new Enemy(60, 5, 10, 20));
+			this.enemies.add(new Enemy(120, renderer.getResolutionY() - 20, 10, 20));
 		}
 	}
 	
@@ -38,22 +39,26 @@ public class Game
 
 	public void update(float delta, Input input, int positionLocation, int colorLocation)
 	{
-		List<Shape> shapes = update(delta, input);
-		
-		draw(shapes, positionLocation, colorLocation);
+		if (input.jumpPressed || input.advancePressed)
+		{
+			this.started = true;
+		}
+
+		if (this.started)
+		{
+			update(delta, input);
+		}
+
+		draw(positionLocation, colorLocation);
 	}
 	
-	private List<Shape> update(float delta, Input input)
+	private void update(float delta, Input input)
 	{
-		List<Shape> result = new ArrayList<Shape>();
-
 		float speed = getSpeed(delta, input);
 		
 		this.background.update(speed * 0.75f);
 		updateEnemies(speed);
-		updateCharacter(delta, input, result);
-		
-		return result;
+		updateCharacter(delta, input);
 	}
 
 	private void updateEnemies(float speed)
@@ -64,10 +69,9 @@ public class Game
 		}
 	}
 	
-	private void updateCharacter(float delta, Input input, List<Shape> shapes)
+	private void updateCharacter(float delta, Input input)
 	{
-		Square square = this.character.updateCharacter(delta, input, this.renderer.getResolutionY());
-		shapes.add(square);
+		this.mainCharacter.updateCharacter(delta, input, this.renderer.getResolutionY());
 	}
 	
 	private float getSpeed(float delta, Input input)
@@ -84,7 +88,7 @@ public class Game
 
 	// ======================== DRAW ====================== \\
 
-	private void draw(List<Shape> shapes, int positionLocation, int colorLocation)
+	private void draw(int positionLocation, int colorLocation)
 	{
 		this.background.draw(positionLocation, colorLocation);
 		
@@ -93,10 +97,7 @@ public class Game
 			enemy.draw(positionLocation, colorLocation);
 		}
 		
-		for (Shape shape : shapes)
-		{
-			shape.draw(positionLocation, colorLocation);
-		}
+		this.mainCharacter.draw(positionLocation, colorLocation);
 	}
 	
 	// ======================== LIFE CYCLE ====================== \\
