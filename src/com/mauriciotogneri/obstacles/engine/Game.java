@@ -1,9 +1,10 @@
 package com.mauriciotogneri.obstacles.engine;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import android.content.Context;
-import android.graphics.Color;
 import com.mauriciotogneri.obstacles.audio.AudioManager;
 import com.mauriciotogneri.obstacles.input.Input;
 import com.mauriciotogneri.obstacles.objects.Background;
@@ -23,6 +24,8 @@ public class Game
 	private final List<Wall> walls = new ArrayList<Wall>();
 
 	private Status status = Status.INIT;
+	
+	private final Random random = new Random();
 
 	private static final int BASE_SPEED = 30;
 	private static final int EXTRA_SPEED = 20;
@@ -54,8 +57,49 @@ public class Game
 		this.background = new Background(this.renderer.getResolutionX(), this.renderer.getResolutionY());
 
 		this.walls.clear();
-		this.walls.add(new Wall(60, 5, 10, 20, Color.argb(255, 90, 110, 120)));
-		this.walls.add(new Wall(120, this.renderer.getResolutionY() - 20, 10, 20, Color.argb(255, 90, 110, 120)));
+
+		// createWall(this.renderer.getResolutionX());
+		// createWall(this.renderer.getResolutionX() + 33);
+		// createWall(this.renderer.getResolutionX() + 66);
+
+		int limit = this.renderer.getResolutionX() + 20;
+
+		for (int i = 0; i < limit; i++)
+		{
+			createWall(this.renderer.getResolutionX() + (i * 10));
+		}
+	}
+	
+	private void createWall(float x)
+	{
+		final int GAP = 10;
+
+		Wall wall = null;
+
+		int width = 10;
+		int height = 10;// 15 + random(0, 10);
+
+		if (random(0, 1) == 0)
+		{
+			// down
+			wall = new Wall(x + GAP, 0, width, height);
+		}
+		else
+		{
+			// up
+			wall = new Wall(x + GAP, this.renderer.getResolutionY() - height, width, height);
+		}
+
+		// this.walls.add(wall);
+
+		// ------------
+		this.walls.add(new Wall(x, this.renderer.getResolutionY() - height, width, height));
+		this.walls.add(new Wall(x + GAP, 0, width, height));
+	}
+	
+	private int random(int min, int max)
+	{
+		return this.random.nextInt(max - min + 1) + min;
 	}
 
 	// ======================== UPDATE ====================== \\
@@ -92,6 +136,11 @@ public class Game
 		updateWalls(speed);
 		updateCharacter(delta, input);
 
+		checkCollision();
+	}
+	
+	private void checkCollision()
+	{
 		if (this.background.collide(this.mainCharacter))
 		{
 			this.audioManager.playSound(Resources.Sounds.EXPLOSION);
@@ -113,10 +162,28 @@ public class Game
 
 	private void updateWalls(float speed)
 	{
-		for (Wall wall : this.walls)
+		Wall[] wallList = getArray(this.walls, Wall.class);
+		
+		for (Wall wall : wallList)
 		{
 			wall.update(speed);
+
+			if (wall.isFinished())
+			{
+				this.walls.remove(wall);
+				// createWall(wall.getRectangle().getX() + wall.getRectangle().getWidth() +
+				// this.renderer.getResolutionX());
+			}
 		}
+	}
+
+	private <T> T[] getArray(List<T> list, Class<?> clazz)
+	{
+		@SuppressWarnings("unchecked")
+		T[] array = (T[])Array.newInstance(clazz, list.size());
+		list.toArray(array);
+
+		return array;
 	}
 
 	private void updateCharacter(float delta, Input input)
@@ -144,7 +211,10 @@ public class Game
 
 		for (Wall wall : this.walls)
 		{
-			wall.draw(renderer);
+			if (wall.insideScreen(renderer.getResolutionX()))
+			{
+				wall.draw(renderer);
+			}
 		}
 
 		this.mainCharacter.draw(renderer);
