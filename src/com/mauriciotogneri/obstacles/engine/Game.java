@@ -78,12 +78,13 @@ public class Game
 			x += this.lastWall.getWidth();
 		}
 		
-		int centerDeviation = random(0, (this.wallGap / 2) - Background.WALL_HEIGHT + 1);
+		int deviationLimit = (this.renderer.getResolutionY() / 2) - (this.wallGap / 2) - Background.WALL_HEIGHT + 1;
+		int centerDeviation = random(0, deviationLimit);
 		int center = random((this.renderer.getResolutionY() / 2) - centerDeviation, (this.renderer.getResolutionY() / 2) + centerDeviation);
 		
 		this.lastWall = new Wall(x, center, this.wallGap, this.wallWidth, this.renderer.getResolutionY());
 		this.walls.add(this.lastWall);
-
+		
 		this.wallGap--;
 		this.wallWidth++;
 	}
