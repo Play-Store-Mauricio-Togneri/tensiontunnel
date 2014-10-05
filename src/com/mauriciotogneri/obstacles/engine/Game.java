@@ -57,7 +57,7 @@ public class Game
 		
 		this.walls.clear();
 		this.wallWidth = 10;
-		this.wallGap = 30;
+		this.wallGap = this.renderer.getResolutionY() / 2;
 
 		this.lastWall = null;
 
@@ -67,12 +67,8 @@ public class Game
 	
 	private Wall lastWall = null;
 	private int wallWidth = 0; // TODO: increment to increase difficulty
-	private int wallGap = 0;
+	private int wallGap = 0; // TODO: reduce to increase difficulty
 	
-	// private float center = 0;
-	// private float gap = 0;
-	// private int wallCounter = 0;
-
 	private void createWall()
 	{
 		float x = this.renderer.getResolutionX();
@@ -82,12 +78,12 @@ public class Game
 			x += this.lastWall.getWidth();
 		}
 		
-		int centerDeviation = 5;
+		int centerDeviation = random(0, (this.wallGap / 2) - Background.WALL_HEIGHT + 1);
 		int center = random((this.renderer.getResolutionY() / 2) - centerDeviation, (this.renderer.getResolutionY() / 2) + centerDeviation);
 		
 		this.lastWall = new Wall(x, center, this.wallGap, this.wallWidth, this.renderer.getResolutionY());
 		this.walls.add(this.lastWall);
-		
+
 		this.wallGap--;
 		this.wallWidth++;
 	}

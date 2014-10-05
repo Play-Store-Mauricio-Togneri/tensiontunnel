@@ -21,10 +21,9 @@ public class Background
 	
 	private static final int SHAPE_WIDTH = 40;
 	private static final int SHAPE_SPACE = 30;
-	private static final int WALL_HEIGHT = 5;
+	public static final int WALL_HEIGHT = 5;
 	private static final int NUMBER_OF_SHAPES = 4;
 
-	// TODO: RED: 255, 110, 110
 	private static final int COLOR_WALL = Color.argb(255, 90, 110, 120);
 	private static final int COLOR_BASE = Color.argb(255, 170, 160, 210);
 	private static final int COLOR_SHAPES = Color.argb(255, 165, 155, 205);
