@@ -1,22 +1,37 @@
 package com.mauriciotogneri.obstacles.objects;
 
-public class Wall extends Enemy
+import com.mauriciotogneri.obstacles.shapes.Rectangle;
+
+public class Wall
 {
+	private float x;
+
+	private final Rectangle rectangle;
+
 	public Wall(float x, float y, float width, float height, int color)
 	{
-		super(x, y, width, height, color);
+		this.x = x;
+
+		this.rectangle = new Rectangle(x, y, width, height, color);
 	}
 	
-	@Override
 	public void update(float value)
 	{
 		this.x -= value;
-		
+
 		if (this.x < -20)
 		{
 			this.x = 120;
 		}
-		
-		updateShape();
+
+		this.rectangle.setX(this.x);
+	}
+
+	public void draw(int positionLocation, int colorLocation)
+	{
+		if (this.rectangle != null)
+		{
+			this.rectangle.draw(positionLocation, colorLocation);
+		}
 	}
 }
