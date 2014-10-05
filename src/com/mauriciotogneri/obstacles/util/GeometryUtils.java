@@ -1,15 +1,26 @@
 package com.mauriciotogneri.obstacles.util;
 
-import android.graphics.Rect;
 import com.mauriciotogneri.obstacles.shapes.Rectangle;
 
 public class GeometryUtils
 {
-	public static boolean collide(Rectangle rectangle1, Rectangle rectangle2)
+	public static boolean collide(Rectangle rectangleA, Rectangle rectangleB)
 	{
-		Rect rectA = new Rect((int)rectangle1.getX(), (int)rectangle1.getY(), (int)(rectangle1.getWidth() + rectangle1.getX()), (int)(rectangle1.getHeight() + rectangle1.getY()));
-		Rect rectB = new Rect((int)rectangle2.getX(), (int)rectangle2.getY(), (int)(rectangle2.getWidth() + rectangle2.getX()), (int)(rectangle2.getHeight() + rectangle2.getY()));
+		float xA = rectangleA.getX();
+		float yA = rectangleA.getY();
+		float widthA = rectangleA.getWidth();
+		float heightA = rectangleA.getHeight();
 		
-		return rectA.intersect(rectB);
+		float xB = rectangleB.getX();
+		float yB = rectangleB.getY();
+		float widthB = rectangleB.getWidth();
+		float heightB = rectangleB.getHeight();
+		
+		boolean onLeft = ((xA + widthA) < xB);
+		boolean onRight = ((xB + widthB) < xA);
+		boolean onTop = ((yB + heightB) < yA);
+		boolean onBottom = ((yA + heightA) < yB);
+		
+		return (!(onLeft || onRight || onTop || onBottom));
 	}
 }

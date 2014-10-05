@@ -9,6 +9,7 @@ import com.mauriciotogneri.obstacles.input.Input;
 import com.mauriciotogneri.obstacles.objects.Background;
 import com.mauriciotogneri.obstacles.objects.MainCharacter;
 import com.mauriciotogneri.obstacles.objects.Wall;
+import com.mauriciotogneri.obstacles.util.GeometryUtils;
 import com.mauriciotogneri.obstacles.util.Resources;
 
 public class Game
@@ -42,23 +43,37 @@ public class Game
 		{
 			this.renderer = renderer;
 
-			this.mainCharacter = new MainCharacter(renderer.getResolutionY() / 2);
-
-			this.background = new Background(renderer.getResolutionX(), renderer.getResolutionY());
-
-			this.walls.add(new Wall(60, 5, 10, 20, Color.argb(255, 90, 110, 120)));
-			this.walls.add(new Wall(120, renderer.getResolutionY() - 20, 10, 20, Color.argb(255, 90, 110, 120)));
+			restart();
 		}
+	}
+
+	private void restart()
+	{
+		this.mainCharacter = new MainCharacter(this.renderer.getResolutionY() / 2);
+
+		this.background = new Background(this.renderer.getResolutionX(), this.renderer.getResolutionY());
+
+		this.walls.clear();
+		this.walls.add(new Wall(60, 5, 10, 20, Color.argb(255, 90, 110, 120)));
+		this.walls.add(new Wall(120, this.renderer.getResolutionY() - 20, 10, 20, Color.argb(255, 90, 110, 120)));
 	}
 
 	// ======================== UPDATE ====================== \\
 
 	public void update(float delta, Input input, Renderer renderer)
 	{
-		if ((input.jumpPressed || input.advancePressed) && (this.status == Status.INIT))
+		if ((input.jumpPressed || input.advancePressed))
 		{
-			this.status = Status.RUNNING;
-			this.audioManager.playAudio(Resources.Music.MUSIC);
+			if (this.status == Status.INIT)
+			{
+				this.status = Status.RUNNING;
+				this.audioManager.playAudio(Resources.Music.MUSIC);
+			}
+			else if (this.status == Status.COLLIDE)
+			{
+				this.status = Status.RUNNING;
+				restart();
+			}
 		}
 
 		if (this.status == Status.RUNNING)
@@ -81,6 +96,18 @@ public class Game
 		{
 			this.audioManager.playSound(Resources.Sounds.EXPLOSION);
 			this.status = Status.COLLIDE;
+		}
+		else
+		{
+			for (Wall wall : this.walls)
+			{
+				if (GeometryUtils.collide(wall.getRectangle(), this.mainCharacter.getShape()))
+				{
+					this.audioManager.playSound(Resources.Sounds.EXPLOSION);
+					this.status = Status.COLLIDE;
+					break;
+				}
+			}
 		}
 	}
 

@@ -21,6 +21,11 @@ public class Wall
 
 		this.rectangle.moveX(-value);
 	}
+	
+	public Rectangle getRectangle()
+	{
+		return this.rectangle;
+	}
 
 	public void draw(Renderer renderer)
 	{
