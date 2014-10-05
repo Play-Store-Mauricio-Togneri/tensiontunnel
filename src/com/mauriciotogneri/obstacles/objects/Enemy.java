@@ -1,42 +1,36 @@
 package com.mauriciotogneri.obstacles.objects;
 
-import android.graphics.Color;
 import com.mauriciotogneri.obstacles.shapes.Rectangle;
 import com.mauriciotogneri.obstacles.shapes.Shape;
 
-public class Enemy
+public abstract class Enemy
 {
-	private float x;
-	private final float y;
-	private final float width;
-	private final float height;
+	protected float x;
+	protected final float y;
+	protected final float width;
+	protected final float height;
+	protected final int color;
+	
 	private Shape shape;
 	
-	public Enemy(float x, float y, float width, float height)
+	public Enemy(float x, float y, float width, float height, int color)
 	{
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
+		this.color = color;
 		
 		updateShape();
 	}
 
 	public void update(float value)
 	{
-		this.x -= value;
-		
-		if (this.x < -20)
-		{
-			this.x = 120;
-		}
-		
-		updateShape();
 	}
 	
-	private void updateShape()
+	protected void updateShape()
 	{
-		this.shape = new Rectangle(this.x, this.y, this.width, this.height, Color.argb(255, 65, 65, 65));
+		this.shape = new Rectangle(this.x, this.y, this.width, this.height, this.color);
 	}
 	
 	public void draw(int positionLocation, int colorLocation)

@@ -2,10 +2,12 @@ package com.mauriciotogneri.obstacles.engine;
 
 import java.util.ArrayList;
 import java.util.List;
+import android.graphics.Color;
 import com.mauriciotogneri.obstacles.input.Input;
 import com.mauriciotogneri.obstacles.objects.Background;
 import com.mauriciotogneri.obstacles.objects.Enemy;
 import com.mauriciotogneri.obstacles.objects.MainCharacter;
+import com.mauriciotogneri.obstacles.objects.Wall;
 
 public class Game
 {
@@ -30,8 +32,8 @@ public class Game
 
 			this.background = new Background(renderer.getResolutionX(), renderer.getResolutionY());
 			
-			this.enemies.add(new Enemy(60, 5, 10, 20));
-			this.enemies.add(new Enemy(120, renderer.getResolutionY() - 20, 10, 20));
+			this.enemies.add(new Wall(60, 5, 10, 20, Color.argb(255, 90, 110, 120)));
+			this.enemies.add(new Wall(120, renderer.getResolutionY() - 20, 10, 20, Color.argb(255, 90, 110, 120)));
 		}
 	}
 	
