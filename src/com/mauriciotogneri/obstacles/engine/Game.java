@@ -38,7 +38,7 @@ public class Game
 
 	// ======================== UPDATE ====================== \\
 	
-	public void update(float delta, Input input, int positionLocation, int colorLocation)
+	public void update(float delta, Input input, Renderer renderer)
 	{
 		if (input.jumpPressed || input.advancePressed)
 		{
@@ -50,7 +50,7 @@ public class Game
 			update(delta, input);
 		}
 		
-		draw(positionLocation, colorLocation);
+		draw(renderer);
 	}
 
 	private void update(float delta, Input input)
@@ -89,16 +89,16 @@ public class Game
 	
 	// ======================== DRAW ====================== \\
 	
-	private void draw(int positionLocation, int colorLocation)
+	private void draw(Renderer renderer)
 	{
-		this.background.draw(positionLocation, colorLocation);
+		this.background.draw(renderer);
 
 		for (Wall wall : this.walls)
 		{
-			wall.draw(positionLocation, colorLocation);
+			wall.draw(renderer);
 		}
 
-		this.mainCharacter.draw(positionLocation, colorLocation);
+		this.mainCharacter.draw(renderer);
 	}
 
 	// ======================== LIFE CYCLE ====================== \\
