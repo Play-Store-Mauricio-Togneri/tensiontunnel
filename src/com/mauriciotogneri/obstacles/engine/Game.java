@@ -16,46 +16,48 @@ import com.mauriciotogneri.obstacles.util.Resources;
 public class Game
 {
 	private Renderer renderer;
-	
+
 	private MainCharacter mainCharacter;
 	private Background background;
 	private final List<Wall> walls = new ArrayList<Wall>();
 	private final List<Enemy> enemies = new ArrayList<Enemy>();
-	
+
 	private Status status = Status.INIT;
 
 	private final Random random = new Random();
-	
+
 	private static final int BASE_SPEED = 30;
 	private static final int EXTRA_SPEED = 20;
-	
+
 	private enum Status
 	{
 		INIT, RUNNING, COLLIDE
 	}
-	
+
 	public Game(Context context)
 	{
 		AudioManager.initialize(context);
 	}
-	
+
 	public void start(Renderer renderer)
 	{
 		if (this.renderer == null)
 		{
 			this.renderer = renderer;
-			
+
 			restart();
 		}
 	}
-	
+
 	private void restart()
 	{
 		this.mainCharacter = new MainCharacter(this.renderer.getResolutionY() / 2);
-		
+
 		this.background = new Background(this.renderer.getResolutionX(), this.renderer.getResolutionY());
-		
+
 		this.enemies.clear();
+		this.beamSpeed = 40;
+		this.beamFrequency = 0.75f;
 
 		this.walls.clear();
 		this.wallWidth = 10;
@@ -68,53 +70,58 @@ public class Game
 		createWall();
 		createEnemy();
 	}
-	
+
 	private Wall lastWall = null;
 	private int wallWidth = 0; // TODO: increment to increase difficulty
-	private int wallGap = 0; // TODO: reduce to increase difficulty
-	
+	private int wallGap = 0; // TODO: decrement to increase difficulty (put a limit)
+								// (MainCharacter.CHARACTER_SIZE * 3/2)?
+
 	private void createWall()
 	{
 		float x = this.renderer.getResolutionX();
-		
+
 		if (this.lastWall != null)
 		{
 			x += this.lastWall.getWidth();
 		}
-		
+
 		int deviationLimit = (this.renderer.getResolutionY() / 2) - (this.wallGap / 2) - Background.WALL_HEIGHT + 1;
 		int centerDeviation = random(0, deviationLimit);
 		int center = random((this.renderer.getResolutionY() / 2) - centerDeviation, (this.renderer.getResolutionY() / 2) + centerDeviation);
-		
+
 		this.lastWall = new Wall(x, center, this.wallGap, this.wallWidth, this.renderer.getResolutionY());
 		this.walls.add(this.lastWall);
-		
+
 		this.wallGap--;
 		this.wallWidth++;
 	}
-
-	private Enemy lastEnemy = null;
+	
+	private float beamSpeed = 40; // TODO: increment to increase difficulty (put a limit) 50?
+	private float beamFrequency = 0.75f; // TODO: decrement to increase difficulty (put a limit) 0.3?
 
 	private void createEnemy()
 	{
 		float x = this.renderer.getResolutionX() / 2;
-		
+
 		if (this.lastWall != null)
 		{
 			x += this.lastWall.getWidth();
 		}
-		
-		this.lastEnemy = new Enemy(x, this.renderer.getResolutionX(), this.renderer.getResolutionY());
-		this.enemies.add(this.lastEnemy);
+
+		Enemy enemy = new Enemy(x, this.renderer.getResolutionX(), this.renderer.getResolutionY(), this.beamFrequency);
+		this.enemies.add(enemy);
+
+		this.beamSpeed += 0.2f;
+		this.beamFrequency -= 0.01f;
 	}
 
 	private int random(int min, int max)
 	{
 		return this.random.nextInt(max - min + 1) + min;
 	}
-	
+
 	// ======================== UPDATE ====================== \\
-	
+
 	public void update(float delta, Input input, Renderer renderer)
 	{
 		if ((input.jumpPressed || input.advancePressed))
@@ -131,24 +138,24 @@ public class Game
 				restart();
 			}
 		}
-		
+
 		if (this.status == Status.RUNNING)
 		{
 			update(delta, input);
 		}
-		
+
 		draw(renderer);
 	}
-	
+
 	private void update(float delta, Input input)
 	{
 		float distance = getDistance(delta, input);
-		
+
 		this.background.update(distance * 0.75f);
 		updateWalls(distance);
 		updateEnemies(delta, distance);
 		updateCharacter(delta, input);
-		
+
 		checkCollision();
 	}
 
@@ -156,14 +163,14 @@ public class Game
 	{
 		if (this.background.collide(this.mainCharacter) || collideWithWall() || collideWithEnemy())
 		{
-			processCollision();
+			// processCollision();
 		}
 	}
-	
+
 	private boolean collideWithWall()
 	{
 		boolean result = false;
-		
+
 		for (Wall wall : this.walls)
 		{
 			if (wall.collide(this.mainCharacter))
@@ -172,14 +179,14 @@ public class Game
 				break;
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	private boolean collideWithEnemy()
 	{
 		boolean result = false;
-		
+
 		for (Enemy enemy : this.enemies)
 		{
 			if (enemy.collide(this.mainCharacter))
@@ -188,7 +195,7 @@ public class Game
 				break;
 			}
 		}
-		
+
 		return result;
 	}
 
@@ -197,7 +204,7 @@ public class Game
 		AudioManager.getInstance().playSound(Resources.Sounds.EXPLOSION);
 		this.status = Status.COLLIDE;
 	}
-	
+
 	private void updateWalls(float distance)
 	{
 		Wall[] wallList = Game.getArray(this.walls, Wall.class);
@@ -206,7 +213,7 @@ public class Game
 		for (Wall wall : wallList)
 		{
 			wall.update(distance);
-			
+
 			if (wall.isFinished())
 			{
 				this.walls.remove(wall);
@@ -227,8 +234,8 @@ public class Game
 
 		for (Enemy enemy : enemyList)
 		{
-			enemy.update(delta, distance);
-			
+			enemy.update(delta, distance, this.beamSpeed);
+
 			if (enemy.isFinished())
 			{
 				this.enemies.remove(enemy);
@@ -242,39 +249,39 @@ public class Game
 			createEnemy();
 		}
 	}
-	
+
 	public static <T> T[] getArray(List<T> list, Class<?> clazz)
 	{
 		@SuppressWarnings("unchecked")
 		T[] array = (T[])Array.newInstance(clazz, list.size());
 		list.toArray(array);
-		
+
 		return array;
 	}
-	
+
 	private void updateCharacter(float delta, Input input)
 	{
 		this.mainCharacter.update(delta, input);
 	}
-	
+
 	private float getDistance(float delta, Input input)
 	{
 		float result = Game.BASE_SPEED;
-		
+
 		if (input.advancePressed)
 		{
 			result += Game.EXTRA_SPEED;
 		}
-		
+
 		return (delta * result);
 	}
-	
+
 	// ======================== DRAW ====================== \\
-	
+
 	private void draw(Renderer renderer)
 	{
 		this.background.draw(renderer);
-		
+
 		for (Wall wall : this.walls)
 		{
 			if (wall.insideScreen(renderer.getResolutionX()))
@@ -290,38 +297,38 @@ public class Game
 				enemy.draw(renderer);
 			}
 		}
-		
+
 		this.mainCharacter.draw(renderer);
 	}
-	
+
 	// ======================== LIFE CYCLE ====================== \\
-	
+
 	public void pause(boolean finishing)
 	{
 		if (AudioManager.getInstance() != null)
 		{
 			AudioManager.getInstance().pauseAudio();
 		}
-		
+
 		if (this.renderer != null)
 		{
 			this.renderer.pause(finishing);
 		}
 	}
-	
+
 	public void resume()
 	{
 		if (AudioManager.getInstance() != null)
 		{
 			AudioManager.getInstance().resumeAudio();
 		}
-		
+
 		if (this.renderer != null)
 		{
 			this.renderer.resume();
 		}
 	}
-	
+
 	public void stop()
 	{
 		if (AudioManager.getInstance() != null)

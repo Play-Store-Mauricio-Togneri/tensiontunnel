@@ -16,39 +16,40 @@ public class Enemy
 	private final int screenWidth;
 	private final int screenHeight;
 	private float timeCounter = 0;
-	private final List<BeamUp> beams = new ArrayList<BeamUp>();
-
+	private final float timeLimit;
+	private final List<Beam> beams = new ArrayList<Beam>();
+	
 	private static final int COLOR = Color.argb(255, 120, 220, 120);
 	private static final int ENEMY_WIDTH = 3;
-	private static final float TIME_BEAM_LIMIT = 0.5f;
-
-	public Enemy(float x, int screenWidth, int screenHeight)
+	
+	public Enemy(float x, int screenWidth, int screenHeight, float timeLimit)
 	{
 		this.screenWidth = screenWidth;
 		this.screenHeight = screenHeight;
+		this.timeLimit = timeLimit;
 		this.rectangle = new Rectangle(x - (Enemy.ENEMY_WIDTH / 2f), Background.WALL_HEIGHT, Enemy.ENEMY_WIDTH, Enemy.ENEMY_WIDTH, Enemy.COLOR);
 	}
 	
-	public void update(float delta, float distance)
+	public void update(float delta, float distance, float beamSpeed)
 	{
 		this.rectangle.moveX(-distance);
-
+		
 		if (insideScreen(this.screenWidth))
 		{
 			this.timeCounter += delta;
 			
-			if (this.timeCounter > Enemy.TIME_BEAM_LIMIT)
+			if (this.timeCounter > this.timeLimit)
 			{
 				AudioManager.getInstance().playSound(Resources.Sounds.BEAM);
-				this.timeCounter -= Enemy.TIME_BEAM_LIMIT;
+				this.timeCounter -= this.timeLimit;
 				
-				this.beams.add(new BeamUp(this.rectangle.getX() + (this.rectangle.getWidth() / 2f), Background.WALL_HEIGHT + Enemy.ENEMY_WIDTH, this.screenHeight));
+				this.beams.add(new BeamUp(this.rectangle.getX() + (this.rectangle.getWidth() / 2f), Background.WALL_HEIGHT + Enemy.ENEMY_WIDTH, this.screenHeight, beamSpeed));
 			}
 		}
-
-		BeamUp[] beamList = Game.getArray(this.beams, BeamUp.class);
 		
-		for (BeamUp beam : beamList)
+		Beam[] beamList = Game.getArray(this.beams, Beam.class);
+		
+		for (Beam beam : beamList)
 		{
 			beam.update(delta, distance);
 			
@@ -68,7 +69,7 @@ public class Enemy
 	{
 		this.beams.clear();
 	}
-
+	
 	public float getWidth()
 	{
 		return this.rectangle.getX() + this.rectangle.getWidth();
@@ -80,7 +81,7 @@ public class Enemy
 		
 		if (!result)
 		{
-			for (BeamUp beam : this.beams)
+			for (Beam beam : this.beams)
 			{
 				if (beam.collide(mainCharacter))
 				{
@@ -97,12 +98,12 @@ public class Enemy
 	{
 		return this.rectangle.insideScreen(width);
 	}
-
+	
 	public void draw(Renderer renderer)
 	{
 		this.rectangle.draw(renderer);
-
-		for (BeamUp beam : this.beams)
+		
+		for (Beam beam : this.beams)
 		{
 			beam.draw(renderer);
 		}
