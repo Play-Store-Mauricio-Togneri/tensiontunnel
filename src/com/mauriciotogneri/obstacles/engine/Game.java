@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import android.content.Context;
+import android.os.Vibrator;
 import com.mauriciotogneri.obstacles.audio.AudioManager;
 import com.mauriciotogneri.obstacles.input.Input;
 import com.mauriciotogneri.obstacles.objects.Background;
@@ -17,6 +18,7 @@ import com.mauriciotogneri.obstacles.util.Resources;
 
 public class Game
 {
+	private final Context context;
 	private Renderer renderer;
 	
 	private MainCharacter mainCharacter;
@@ -38,7 +40,15 @@ public class Game
 	
 	public Game(Context context)
 	{
+		this.context = context;
+		
 		AudioManager.initialize(context);
+	}
+
+	private void vibrate()
+	{
+		Vibrator vibrator = (Vibrator)this.context.getSystemService(Context.VIBRATOR_SERVICE);
+		vibrator.vibrate(300);
 	}
 	
 	public void start(Renderer renderer)
@@ -216,6 +226,7 @@ public class Game
 	private void processCollision()
 	{
 		AudioManager.getInstance().playSound(Resources.Sounds.EXPLOSION);
+		vibrate();
 		this.status = Status.COLLIDE;
 	}
 	
