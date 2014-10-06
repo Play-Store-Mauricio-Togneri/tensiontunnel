@@ -17,8 +17,6 @@ public class Game
 {
 	private Renderer renderer;
 	
-	private final AudioManager audioManager;
-	
 	private MainCharacter mainCharacter;
 	private Background background;
 	private final List<Wall> walls = new ArrayList<Wall>();
@@ -38,7 +36,7 @@ public class Game
 	
 	public Game(Context context)
 	{
-		this.audioManager = new AudioManager(context);
+		AudioManager.initialize(context);
 	}
 	
 	public void start(Renderer renderer)
@@ -124,7 +122,8 @@ public class Game
 			if (this.status == Status.INIT)
 			{
 				this.status = Status.RUNNING;
-				this.audioManager.playAudio(Resources.Music.MUSIC);
+
+				AudioManager.getInstance().playAudio(Resources.Music.MUSIC);
 			}
 			else if (this.status == Status.COLLIDE)
 			{
@@ -195,7 +194,7 @@ public class Game
 
 	private void processCollision()
 	{
-		this.audioManager.playSound(Resources.Sounds.EXPLOSION);
+		AudioManager.getInstance().playSound(Resources.Sounds.EXPLOSION);
 		this.status = Status.COLLIDE;
 	}
 	
@@ -228,12 +227,7 @@ public class Game
 
 		for (Enemy enemy : enemyList)
 		{
-			boolean beamCreated = enemy.update(delta, distance);
-
-			if (beamCreated)
-			{
-				this.audioManager.playSound(Resources.Sounds.BEAM);
-			}
+			enemy.update(delta, distance);
 			
 			if (enemy.isFinished())
 			{
@@ -304,9 +298,9 @@ public class Game
 	
 	public void pause(boolean finishing)
 	{
-		if (this.audioManager != null)
+		if (AudioManager.getInstance() != null)
 		{
-			this.audioManager.pauseAudio();
+			AudioManager.getInstance().pauseAudio();
 		}
 		
 		if (this.renderer != null)
@@ -317,9 +311,9 @@ public class Game
 	
 	public void resume()
 	{
-		if (this.audioManager != null)
+		if (AudioManager.getInstance() != null)
 		{
-			this.audioManager.resumeAudio();
+			AudioManager.getInstance().resumeAudio();
 		}
 		
 		if (this.renderer != null)
@@ -330,9 +324,9 @@ public class Game
 	
 	public void stop()
 	{
-		if (this.audioManager != null)
+		if (AudioManager.getInstance() != null)
 		{
-			this.audioManager.stopAudio();
+			AudioManager.getInstance().stopAudio();
 		}
 	}
 }
