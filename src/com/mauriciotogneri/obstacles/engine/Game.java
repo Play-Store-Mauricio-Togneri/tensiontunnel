@@ -8,6 +8,7 @@ import android.content.Context;
 import com.mauriciotogneri.obstacles.audio.AudioManager;
 import com.mauriciotogneri.obstacles.input.Input;
 import com.mauriciotogneri.obstacles.objects.Background;
+import com.mauriciotogneri.obstacles.objects.Enemy;
 import com.mauriciotogneri.obstacles.objects.MainCharacter;
 import com.mauriciotogneri.obstacles.objects.Wall;
 import com.mauriciotogneri.obstacles.util.Resources;
@@ -21,6 +22,7 @@ public class Game
 	private MainCharacter mainCharacter;
 	private Background background;
 	private final List<Wall> walls = new ArrayList<Wall>();
+	private final List<Enemy> enemies = new ArrayList<Enemy>();
 	
 	private Status status = Status.INIT;
 
@@ -55,6 +57,8 @@ public class Game
 		
 		this.background = new Background(this.renderer.getResolutionX(), this.renderer.getResolutionY());
 		
+		this.enemies.clear();
+
 		this.walls.clear();
 		this.wallWidth = 10;
 		this.wallGap = this.renderer.getResolutionY() / 2;
@@ -62,7 +66,9 @@ public class Game
 		this.lastWall = null;
 
 		createWall();
+		createEnemy();
 		createWall();
+		createEnemy();
 	}
 	
 	private Wall lastWall = null;
@@ -87,6 +93,21 @@ public class Game
 		
 		this.wallGap--;
 		this.wallWidth++;
+	}
+
+	private Enemy lastEnemy = null;
+
+	private void createEnemy()
+	{
+		float x = this.renderer.getResolutionX() / 2;
+		
+		if (this.lastWall != null)
+		{
+			x += this.lastWall.getWidth();
+		}
+		
+		this.lastEnemy = new Enemy(x, this.renderer.getResolutionX(), this.renderer.getResolutionY());
+		this.enemies.add(this.lastEnemy);
 	}
 
 	private int random(int min, int max)
@@ -122,10 +143,11 @@ public class Game
 	
 	private void update(float delta, Input input)
 	{
-		float speed = getSpeed(delta, input);
+		float distance = getDistance(delta, input);
 		
-		this.background.update(speed * 0.75f);
-		updateWalls(speed);
+		this.background.update(distance * 0.75f);
+		updateWalls(distance);
+		updateEnemies(delta, distance);
 		updateCharacter(delta, input);
 		
 		checkCollision();
@@ -133,21 +155,42 @@ public class Game
 
 	private void checkCollision()
 	{
-		if (this.background.collide(this.mainCharacter))
+		if (this.background.collide(this.mainCharacter) || collideWithWall() || collideWithEnemy())
 		{
 			processCollision();
 		}
-		else
+	}
+	
+	private boolean collideWithWall()
+	{
+		boolean result = false;
+		
+		for (Wall wall : this.walls)
 		{
-			for (Wall wall : this.walls)
+			if (wall.collide(this.mainCharacter))
 			{
-				if (wall.collide(this.mainCharacter))
-				{
-					processCollision();
-					break;
-				}
+				result = true;
+				break;
 			}
 		}
+		
+		return result;
+	}
+	
+	private boolean collideWithEnemy()
+	{
+		boolean result = false;
+		
+		for (Enemy enemy : this.enemies)
+		{
+			if (enemy.collide(this.mainCharacter))
+			{
+				result = true;
+				break;
+			}
+		}
+		
+		return result;
 	}
 
 	private void processCollision()
@@ -156,14 +199,14 @@ public class Game
 		this.status = Status.COLLIDE;
 	}
 	
-	private void updateWalls(float speed)
+	private void updateWalls(float distance)
 	{
-		Wall[] wallList = getArray(this.walls, Wall.class);
+		Wall[] wallList = Game.getArray(this.walls, Wall.class);
 		int finished = 0;
 
 		for (Wall wall : wallList)
 		{
-			wall.update(speed);
+			wall.update(distance);
 			
 			if (wall.isFinished())
 			{
@@ -177,8 +220,36 @@ public class Game
 			createWall();
 		}
 	}
+
+	private void updateEnemies(float delta, float distance)
+	{
+		Enemy[] enemyList = Game.getArray(this.enemies, Enemy.class);
+		int finished = 0;
+
+		for (Enemy enemy : enemyList)
+		{
+			boolean beamCreated = enemy.update(delta, distance);
+
+			if (beamCreated)
+			{
+				this.audioManager.playSound(Resources.Sounds.BEAM);
+			}
+			
+			if (enemy.isFinished())
+			{
+				this.enemies.remove(enemy);
+				enemy.destroy();
+				finished++;
+			}
+		}
+
+		for (int i = 0; i < finished; i++)
+		{
+			createEnemy();
+		}
+	}
 	
-	private <T> T[] getArray(List<T> list, Class<?> clazz)
+	public static <T> T[] getArray(List<T> list, Class<?> clazz)
 	{
 		@SuppressWarnings("unchecked")
 		T[] array = (T[])Array.newInstance(clazz, list.size());
@@ -192,7 +263,7 @@ public class Game
 		this.mainCharacter.update(delta, input);
 	}
 	
-	private float getSpeed(float delta, Input input)
+	private float getDistance(float delta, Input input)
 	{
 		float result = Game.BASE_SPEED;
 		
@@ -215,6 +286,14 @@ public class Game
 			if (wall.insideScreen(renderer.getResolutionX()))
 			{
 				wall.draw(renderer);
+			}
+		}
+
+		for (Enemy enemy : this.enemies)
+		{
+			if (enemy.insideScreen(renderer.getResolutionX()))
+			{
+				enemy.draw(renderer);
 			}
 		}
 		

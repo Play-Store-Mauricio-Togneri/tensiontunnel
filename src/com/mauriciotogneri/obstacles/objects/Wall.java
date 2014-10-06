@@ -20,10 +20,10 @@ public class Wall
 		this.rectangleBottom = new Rectangle(x, 0, wallWidth, center - (gap / 2f), Wall.COLOR);
 	}
 	
-	public void update(float value)
+	public void update(float distance)
 	{
-		this.rectangleTop.moveX(-value);
-		this.rectangleBottom.moveX(-value);
+		this.rectangleTop.moveX(-distance);
+		this.rectangleBottom.moveX(-distance);
 	}
 	
 	public boolean isFinished()

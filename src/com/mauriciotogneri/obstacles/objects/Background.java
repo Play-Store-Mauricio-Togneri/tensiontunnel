@@ -35,7 +35,7 @@ public class Background
 		createShapes(height);
 	}
 
-	public void update(float value)
+	public void update(float distance)
 	{
 		if ((this.polygon1.getX() + this.polygon1.getWidth()) < 0)
 		{
@@ -43,7 +43,7 @@ public class Background
 		}
 		else
 		{
-			this.polygon1.moveX(-value);
+			this.polygon1.moveX(-distance);
 		}
 
 		if ((this.polygon2.getX() + this.polygon2.getWidth()) < 0)
@@ -52,7 +52,7 @@ public class Background
 		}
 		else
 		{
-			this.polygon2.moveX(-value);
+			this.polygon2.moveX(-distance);
 		}
 	}
 
