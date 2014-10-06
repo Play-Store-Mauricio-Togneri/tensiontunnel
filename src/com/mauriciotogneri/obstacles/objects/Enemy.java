@@ -16,7 +16,7 @@ public class Enemy
 	private final int screenWidth;
 	private final int screenHeight;
 	private float timeCounter = 0;
-	private final List<Beam> beams = new ArrayList<Beam>();
+	private final List<BeamUp> beams = new ArrayList<BeamUp>();
 
 	private static final int COLOR = Color.argb(255, 120, 220, 120);
 	private static final int ENEMY_WIDTH = 3;
@@ -42,13 +42,13 @@ public class Enemy
 				AudioManager.getInstance().playSound(Resources.Sounds.BEAM);
 				this.timeCounter -= Enemy.TIME_BEAM_LIMIT;
 				
-				this.beams.add(new Beam(this.rectangle.getX() + (this.rectangle.getWidth() / 2f), Background.WALL_HEIGHT + Enemy.ENEMY_WIDTH, this.screenHeight));
+				this.beams.add(new BeamUp(this.rectangle.getX() + (this.rectangle.getWidth() / 2f), Background.WALL_HEIGHT + Enemy.ENEMY_WIDTH, this.screenHeight));
 			}
 		}
 
-		Beam[] beamList = Game.getArray(this.beams, Beam.class);
+		BeamUp[] beamList = Game.getArray(this.beams, BeamUp.class);
 		
-		for (Beam beam : beamList)
+		for (BeamUp beam : beamList)
 		{
 			beam.update(delta, distance);
 			
@@ -80,7 +80,7 @@ public class Enemy
 		
 		if (!result)
 		{
-			for (Beam beam : this.beams)
+			for (BeamUp beam : this.beams)
 			{
 				if (beam.collide(mainCharacter))
 				{
@@ -102,7 +102,7 @@ public class Enemy
 	{
 		this.rectangle.draw(renderer);
 
-		for (Beam beam : this.beams)
+		for (BeamUp beam : this.beams)
 		{
 			beam.draw(renderer);
 		}
