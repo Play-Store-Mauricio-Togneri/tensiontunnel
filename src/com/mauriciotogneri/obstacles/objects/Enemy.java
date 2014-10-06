@@ -10,24 +10,23 @@ import com.mauriciotogneri.obstacles.shapes.Rectangle;
 import com.mauriciotogneri.obstacles.util.GeometryUtils;
 import com.mauriciotogneri.obstacles.util.Resources;
 
-public class Enemy
+public abstract class Enemy
 {
-	private final Rectangle rectangle;
+	protected final Rectangle rectangle;
+
 	private final int screenWidth;
-	private final int screenHeight;
 	private float timeCounter = 0;
 	private final float timeLimit;
 	private final List<Beam> beams = new ArrayList<Beam>();
 	
-	private static final int COLOR = Color.argb(255, 120, 220, 120);
-	private static final int ENEMY_WIDTH = 3;
+	protected static final int COLOR = Color.argb(255, 120, 220, 120);
+	protected static final int ENEMY_WIDTH = 3;
 	
-	public Enemy(float x, int screenWidth, int screenHeight, float timeLimit)
+	public Enemy(Rectangle rectangle, int screenWidth, float timeLimit)
 	{
 		this.screenWidth = screenWidth;
-		this.screenHeight = screenHeight;
 		this.timeLimit = timeLimit;
-		this.rectangle = new Rectangle(x - (Enemy.ENEMY_WIDTH / 2f), Background.WALL_HEIGHT, Enemy.ENEMY_WIDTH, Enemy.ENEMY_WIDTH, Enemy.COLOR);
+		this.rectangle = rectangle;
 	}
 	
 	public void update(float delta, float distance, float beamSpeed)
@@ -43,10 +42,17 @@ public class Enemy
 				AudioManager.getInstance().playSound(Resources.Sounds.BEAM);
 				this.timeCounter -= this.timeLimit;
 				
-				this.beams.add(new BeamUp(this.rectangle.getX() + (this.rectangle.getWidth() / 2f), Background.WALL_HEIGHT + Enemy.ENEMY_WIDTH, this.screenHeight, beamSpeed));
+				this.beams.add(getNewBeam(beamSpeed));
 			}
 		}
 		
+		updateBeams(delta, distance);
+	}
+
+	protected abstract Beam getNewBeam(float beamSpeed);
+	
+	private void updateBeams(float delta, float distance)
+	{
 		Beam[] beamList = Game.getArray(this.beams, Beam.class);
 		
 		for (Beam beam : beamList)

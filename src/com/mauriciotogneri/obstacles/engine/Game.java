@@ -9,6 +9,8 @@ import com.mauriciotogneri.obstacles.audio.AudioManager;
 import com.mauriciotogneri.obstacles.input.Input;
 import com.mauriciotogneri.obstacles.objects.Background;
 import com.mauriciotogneri.obstacles.objects.Enemy;
+import com.mauriciotogneri.obstacles.objects.EnemyBottom;
+import com.mauriciotogneri.obstacles.objects.EnemyTop;
 import com.mauriciotogneri.obstacles.objects.MainCharacter;
 import com.mauriciotogneri.obstacles.objects.Wall;
 import com.mauriciotogneri.obstacles.util.Resources;
@@ -98,7 +100,8 @@ public class Game
 	
 	private float beamSpeed = 40; // TODO: increment to increase difficulty (put a limit) 50?
 	private float beamFrequency = 0.75f; // TODO: decrement to increase difficulty (put a limit) 0.3?
-
+	private boolean enemyBottom = true;
+	
 	private void createEnemy()
 	{
 		float x = this.renderer.getResolutionX() / 2;
@@ -108,7 +111,18 @@ public class Game
 			x += this.lastWall.getWidth();
 		}
 
-		Enemy enemy = new Enemy(x, this.renderer.getResolutionX(), this.renderer.getResolutionY(), this.beamFrequency);
+		Enemy enemy = null;
+		
+		if (this.enemyBottom)
+		{
+			enemy = new EnemyBottom(x, this.renderer.getResolutionX(), this.renderer.getResolutionY(), this.beamFrequency);
+		}
+		else
+		{
+			enemy = new EnemyTop(x, this.renderer.getResolutionX(), this.renderer.getResolutionY(), this.beamFrequency);
+		}
+
+		this.enemyBottom = !this.enemyBottom;
 		this.enemies.add(enemy);
 
 		this.beamSpeed += 0.2f;
@@ -163,7 +177,7 @@ public class Game
 	{
 		if (this.background.collide(this.mainCharacter) || collideWithWall() || collideWithEnemy())
 		{
-			// processCollision();
+			processCollision();
 		}
 	}
 
