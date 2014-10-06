@@ -347,11 +347,6 @@ public class Game
 		{
 			AudioManager.getInstance().resumeAudio();
 		}
-		
-		if (this.renderer != null)
-		{
-			this.renderer.resume();
-		}
 	}
 	
 	public void stop()

@@ -13,51 +13,62 @@ import com.mauriciotogneri.obstacles.engine.Renderer;
 public class MainActivity extends Activity
 {
 	private Game game;
-	
+	private GLSurfaceView screen;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+
 		Window window = getWindow();
 		window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
+		
 		this.game = new Game(this);
-		
-		GLSurfaceView screen = new GLSurfaceView(this);
-		screen.setEGLContextClientVersion(2);
-		
-		Renderer renderer = new Renderer(this.game, this, screen);
-		screen.setRenderer(renderer);
 
-		setContentView(screen);
+		this.screen = new GLSurfaceView(this);
+		this.screen.setEGLContextClientVersion(2);
+
+		Renderer renderer = new Renderer(this.game, this, this.screen);
+		this.screen.setRenderer(renderer);
+		
+		setContentView(this.screen);
 	}
-	
+
 	@Override
 	protected void onResume()
 	{
 		super.onResume();
-		
+
 		if (this.game != null)
 		{
 			this.game.resume();
 		}
+		
+		if (this.screen != null)
+		{
+			this.screen.onResume();
+		}
 	}
-	
+
 	@Override
 	protected void onPause()
 	{
 		super.onPause();
-		
+
 		if (this.game != null)
 		{
 			this.game.pause(isFinishing());
 		}
+
+		if (this.screen != null)
+		{
+			this.screen.onPause();
+		}
 	}
-	
+
 	@Override
 	protected void onDestroy()
 	{
@@ -65,7 +76,7 @@ public class MainActivity extends Activity
 		{
 			this.game.stop();
 		}
-
+		
 		super.onDestroy();
 	}
 }
