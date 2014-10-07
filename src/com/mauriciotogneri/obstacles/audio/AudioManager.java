@@ -85,7 +85,7 @@ public class AudioManager
 	
 	private void playbackSound(int resourceId)
 	{
-		this.soundPool.play(resourceId, 0.5f, 0.5f, 1, 0, 1f);
+		this.soundPool.play(resourceId, 1f, 1f, 1, 0, 1f);
 	}
 
 	public void playAudio(String audioPath)
