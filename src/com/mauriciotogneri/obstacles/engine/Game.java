@@ -29,6 +29,29 @@ public class Game
 	private Status status = Status.INIT;
 
 	private final Random random = new Random();
+	
+	private Wall lastWall = null;
+	private int wallWidth = 0;
+	private int wallGap = 0;
+	
+	private float beamSpeed = 0;
+	private float beamFrequency = 0;
+	private boolean enemyBottom = true;
+
+	private static final int WALL_WIDTH_INIT_VALUE = 10;
+	private static final int WALL_WIDTH_INCREMENT = 1;
+	private static final int WALL_WIDTH_LIMIT = 100;
+
+	private static final int WALL_GAP_DECREMENT = 1;
+	private static final int WALL_GAP_LIMIT = (int)(MainCharacter.CHARACTER_SIZE * (3 / 2f));
+
+	private static final int BEAM_SPEED_INIT_VALUE = 40;
+	private static final float BEAM_SPEED_INCREMENT = 0.2f;
+	private static final int BEAM_SPEED_LIMIT = 50;
+	
+	private static final float BEAM_FREQUENCY_INIT_VALUE = 0.75f;
+	private static final float BEAM_FREQUENCY_DECREMENT = 0.01f;
+	private static final float BEAM_FREQUENCY_LIMIT = 0.3f;
 
 	private static final int BASE_SPEED = 30;
 	private static final int EXTRA_SPEED = 20;
@@ -68,11 +91,11 @@ public class Game
 		this.background = new Background(Renderer.RESOLUTION_X, Renderer.RESOLUTION_Y);
 
 		this.enemies.clear();
-		this.beamSpeed = 40;
-		this.beamFrequency = 0.75f;
+		this.beamSpeed = Game.BEAM_SPEED_INIT_VALUE;
+		this.beamFrequency = Game.BEAM_FREQUENCY_INIT_VALUE;
 
 		this.walls.clear();
-		this.wallWidth = 10;
+		this.wallWidth = Game.WALL_WIDTH_INIT_VALUE;
 		this.wallGap = Renderer.RESOLUTION_Y / 2;
 
 		this.lastWall = null;
@@ -83,34 +106,38 @@ public class Game
 		createEnemy();
 	}
 
-	private Wall lastWall = null;
-	private int wallWidth = 0; // TODO: increment to increase difficulty
-	private int wallGap = 0; // TODO: decrement to increase difficulty (put a limit)
-								// (MainCharacter.CHARACTER_SIZE * 3/2)?
-
 	private void createWall()
 	{
 		float x = Renderer.RESOLUTION_X;
-
+		
 		if (this.lastWall != null)
 		{
 			x += this.lastWall.getWidth();
 		}
-
+		
 		int deviationLimit = (Renderer.RESOLUTION_Y / 2) - (this.wallGap / 2) - Background.WALL_HEIGHT + 1;
 		int centerDeviation = random(0, deviationLimit);
 		int center = random((Renderer.RESOLUTION_Y / 2) - centerDeviation, (Renderer.RESOLUTION_Y / 2) + centerDeviation);
-
+		
 		this.lastWall = new Wall(x, center, this.wallGap, this.wallWidth);
 		this.walls.add(this.lastWall);
-
-		this.wallGap--;
-		this.wallWidth++;
+		
+		/* Change difficulty */
+		
+		this.wallGap -= Game.WALL_GAP_DECREMENT;
+		
+		if (this.wallGap < Game.WALL_GAP_LIMIT)
+		{
+			this.wallGap = Game.WALL_GAP_LIMIT;
+		}
+		
+		this.wallWidth += Game.WALL_WIDTH_INCREMENT;
+		
+		if (this.wallWidth > Game.WALL_WIDTH_LIMIT)
+		{
+			this.wallWidth = Game.WALL_WIDTH_LIMIT;
+		}
 	}
-	
-	private float beamSpeed = 40; // TODO: increment to increase difficulty (put a limit) 50?
-	private float beamFrequency = 0.75f; // TODO: decrement to increase difficulty (put a limit) 0.3?
-	private boolean enemyBottom = true;
 
 	private void createEnemy()
 	{
@@ -135,8 +162,21 @@ public class Game
 		this.enemyBottom = !this.enemyBottom;
 		this.enemies.add(enemy);
 
-		this.beamSpeed += 0.2f;
-		this.beamFrequency -= 0.01f;
+		/* Change difficulty */
+		
+		this.beamSpeed += Game.BEAM_SPEED_INCREMENT;
+
+		if (this.beamSpeed > Game.BEAM_SPEED_LIMIT)
+		{
+			this.beamSpeed = Game.BEAM_SPEED_LIMIT;
+		}
+
+		this.beamFrequency -= Game.BEAM_FREQUENCY_DECREMENT;
+
+		if (this.beamFrequency < Game.BEAM_FREQUENCY_LIMIT)
+		{
+			this.beamFrequency = Game.BEAM_FREQUENCY_LIMIT;
+		}
 	}
 
 	private int random(int min, int max)
