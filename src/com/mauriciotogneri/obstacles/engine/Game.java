@@ -432,7 +432,11 @@ public class Game
 			}
 		}
 
-		this.score.draw(renderer);
+		if (this.status != Status.COLLIDE)
+		{
+			this.score.draw(renderer);
+		}
+
 		this.mainCharacter.draw(renderer);
 	}
 
