@@ -4,7 +4,7 @@ public class Input
 {
 	public boolean jumpPressed = false;
 	public boolean advancePressed = false;
-	
+
 	public void press(float x, int resolutionX)
 	{
 		if (x < (resolutionX / 2))
@@ -16,7 +16,7 @@ public class Input
 			this.advancePressed = true;
 		}
 	}
-	
+
 	public void release(float x, int resolutionX)
 	{
 		if (x < (resolutionX / 2))
@@ -27,5 +27,11 @@ public class Input
 		{
 			this.advancePressed = false;
 		}
+	}
+
+	public void clear()
+	{
+		this.jumpPressed = false;
+		this.advancePressed = false;
 	}
 }
