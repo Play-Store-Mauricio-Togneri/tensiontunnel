@@ -14,7 +14,6 @@ public abstract class Enemy
 {
 	protected final Rectangle rectangle;
 	
-	private final int screenWidth;
 	private float timeCounter = 0;
 	private final float timeLimit;
 	private final List<Beam> beams = new ArrayList<Beam>();
@@ -22,9 +21,8 @@ public abstract class Enemy
 	protected static final int COLOR = Color.argb(255, 120, 220, 120);
 	protected static final int ENEMY_WIDTH = 3;
 
-	public Enemy(Rectangle rectangle, int screenWidth, float timeLimit)
+	public Enemy(Rectangle rectangle, float timeLimit)
 	{
-		this.screenWidth = screenWidth;
 		this.timeLimit = timeLimit;
 		this.rectangle = rectangle;
 	}
@@ -33,13 +31,13 @@ public abstract class Enemy
 	{
 		this.rectangle.moveX(-distance);
 
-		if (this.rectangle.getX() < (this.screenWidth * 1.5f))
+		if (this.rectangle.getX() < (Renderer.RESOLUTION_X * 1.5f))
 		{
 			this.timeCounter += delta;
 
 			if (this.timeCounter > this.timeLimit)
 			{
-				if (insideScreen(this.screenWidth))
+				if (insideScreen())
 				{
 					AudioManager.getInstance().playSound(Resources.Sounds.BEAM);
 				}
@@ -104,9 +102,9 @@ public abstract class Enemy
 		return result;
 	}
 
-	public boolean insideScreen(int width)
+	public boolean insideScreen()
 	{
-		return this.rectangle.insideScreen(width);
+		return this.rectangle.insideScreen(Renderer.RESOLUTION_X);
 	}
 
 	public void draw(Renderer renderer)

@@ -12,10 +12,10 @@ public class Wall
 
 	private static final int COLOR = Color.argb(255, 90, 110, 120);
 	
-	public Wall(float x, float center, float gap, float wallWidth, float screenHeight)
+	public Wall(float x, float center, float gap, float wallWidth)
 	{
 		float y = center + (gap / 2f);
-		this.rectangleTop = new Rectangle(x, y, wallWidth, screenHeight - y, Wall.COLOR);
+		this.rectangleTop = new Rectangle(x, y, wallWidth, Renderer.RESOLUTION_Y - y, Wall.COLOR);
 
 		this.rectangleBottom = new Rectangle(x, 0, wallWidth, center - (gap / 2f), Wall.COLOR);
 	}
@@ -41,9 +41,9 @@ public class Wall
 		return ((GeometryUtils.collide(this.rectangleTop, mainCharacter.getShape())) || (GeometryUtils.collide(this.rectangleBottom, mainCharacter.getShape())));
 	}
 	
-	public boolean insideScreen(int width)
+	public boolean insideScreen()
 	{
-		return this.rectangleTop.insideScreen(width);
+		return this.rectangleTop.insideScreen(Renderer.RESOLUTION_X);
 	}
 
 	public void draw(Renderer renderer)
