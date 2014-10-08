@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Vibrator;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -142,19 +143,40 @@ public class Game
 		}
 	}
 
-	private void displayBlockScreen(final int score)
+	private void displayBlockScreen()
 	{
 		this.mainActivity.runOnUiThread(new Runnable()
 		{
 			@Override
 			public void run()
 			{
-				TextView scoreView = (TextView)Game.this.blockScreen.findViewById(R.id.score);
-				scoreView.setText(String.valueOf(score));
-
-				Game.this.blockScreen.setVisibility(View.VISIBLE);
+				activateBlockScreen();
 			}
 		});
+	}
+	
+	private void activateBlockScreen()
+	{
+		SharedPreferences preferences = this.mainActivity.getPreferences(Context.MODE_PRIVATE);
+		int bestScore = preferences.getInt("BEST", 0);
+		int currentScore = this.score.getValue();
+
+		if (currentScore > bestScore)
+		{
+			bestScore = currentScore;
+
+			SharedPreferences.Editor editor = preferences.edit();
+			editor.putInt("BEST", currentScore);
+			editor.commit();
+		}
+		
+		TextView scoreView = (TextView)this.blockScreen.findViewById(R.id.score);
+		scoreView.setText(String.valueOf(currentScore));
+		
+		TextView bestView = (TextView)this.blockScreen.findViewById(R.id.best);
+		bestView.setText(String.valueOf(bestScore));
+
+		this.blockScreen.setVisibility(View.VISIBLE);
 	}
 	
 	private void hideBlockScreen()
@@ -329,7 +351,7 @@ public class Game
 		vibrate();
 		input.clear();
 		this.status = Status.COLLIDE;
-		displayBlockScreen(this.score.getValue());
+		displayBlockScreen();
 	}
 	
 	private void updateWalls(float distance)
