@@ -2,5 +2,10 @@
 <resources>
 
     <string name="app_name">Obstacles</string>
-
+    
+    <string name="img_description"></string>
+    
+    <string name="label_score">SCORE:</string>
+	<string name="label_best">BEST:</string>
+    
 </resources>
