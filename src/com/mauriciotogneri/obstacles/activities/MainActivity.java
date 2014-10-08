@@ -63,7 +63,7 @@ public class MainActivity extends Activity
 		
 		setContentView(layout);
 	}
-
+	
 	@Override
 	protected void onResume()
 	{
