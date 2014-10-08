@@ -17,7 +17,7 @@ public class Digit
 	private final Eight eight;
 	private final Nine nine;
 	
-	public static final int DIGIT_WIDTH = 3;
+	public static final int DIGIT_WIDTH = 4;
 	private static final int DIGIT_HEIGHT = 5;
 	
 	private static final int COLOR = Color.WHITE;
@@ -104,7 +104,7 @@ public class Digit
 		}
 		else if (id == 5)
 		{
-			result = new Rectangle(x + 2, y + 2, 1, 3, Digit.COLOR);
+			result = new Rectangle(x + 3, y + 2, 1, 3, Digit.COLOR);
 		}
 		else if (id == 6)
 		{
@@ -112,7 +112,7 @@ public class Digit
 		}
 		else if (id == 7)
 		{
-			result = new Rectangle(x + 2, y, 1, 3, Digit.COLOR);
+			result = new Rectangle(x + 3, y, 1, 3, Digit.COLOR);
 		}
 
 		return result;
