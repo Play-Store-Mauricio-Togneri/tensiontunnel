@@ -82,7 +82,7 @@
                 android:layout_height="72dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
-                android:background="#3CAAE6"
+                android:background="@layout/border_button_ranking"
                 android:contentDescription="@string/img_description"
                 android:src="@drawable/ranking" />
 
@@ -92,7 +92,7 @@
                 android:layout_height="72dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginStart="10dp"
-                android:background="#64C864"
+                android:background="@layout/border_button_play"
                 android:contentDescription="@string/img_description"
                 android:src="@drawable/play" />
             
