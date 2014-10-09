@@ -17,7 +17,7 @@ public class EnemyRotating
 	private final Rectangle rectangle1;
 	private final Rectangle rectangle2;
 
-	private static final int COLOR = Color.argb(255, 255, 0, 255);
+	private static final int COLOR = Color.argb(255, 70, 190, 255);
 	private static final int ENEMY_WIDTH = 3;
 	
 	public enum Direction
