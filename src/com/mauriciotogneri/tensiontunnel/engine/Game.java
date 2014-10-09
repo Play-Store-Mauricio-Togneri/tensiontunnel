@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Vibrator;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,10 +21,13 @@ import com.mauriciotogneri.tensiontunnel.objects.Background;
 import com.mauriciotogneri.tensiontunnel.objects.MainCharacter;
 import com.mauriciotogneri.tensiontunnel.objects.Wall;
 import com.mauriciotogneri.tensiontunnel.objects.enemies.rotating.EnemyRotating;
+import com.mauriciotogneri.tensiontunnel.objects.enemies.rotating.EnemyRotatingDouble;
+import com.mauriciotogneri.tensiontunnel.objects.enemies.rotating.EnemyRotatingSingle;
 import com.mauriciotogneri.tensiontunnel.objects.enemies.shooting.EnemyShooting;
 import com.mauriciotogneri.tensiontunnel.objects.enemies.shooting.EnemyShootingBottom;
 import com.mauriciotogneri.tensiontunnel.objects.enemies.shooting.EnemyShootingTop;
 import com.mauriciotogneri.tensiontunnel.objects.score.Score;
+import com.mauriciotogneri.tensiontunnel.shapes.Rectangle;
 import com.mauriciotogneri.tensiontunnel.statistics.Statistics;
 import com.mauriciotogneri.tensiontunnel.util.Resources;
 
@@ -56,7 +60,14 @@ public class Game
 	
 	private float rotationSpeed = 0;
 	
+	// TODO: CHANGE
 	private boolean enemyBottom = true;
+	private boolean enemySingle = true;
+
+	// TODO: INPUT DEBUG
+	private final boolean inputDebug = true;
+	private Rectangle inputDebugJump;
+	private Rectangle inputDebugAdvance;
 
 	private static final int WALL_WIDTH_INIT_VALUE = 10;
 	private static final int WALL_WIDTH_INCREMENT = 1;
@@ -134,6 +145,9 @@ public class Game
 			this.background = new Background(Renderer.RESOLUTION_X, Renderer.RESOLUTION_Y);
 			this.score = new Score();
 
+			this.inputDebugJump = new Rectangle(5, Renderer.RESOLUTION_Y - Background.WALL_HEIGHT + 1, Background.WALL_HEIGHT - 2, Background.WALL_HEIGHT - 2, Color.argb(255, 0, 255, 255));
+			this.inputDebugAdvance = new Rectangle(20 + Background.WALL_HEIGHT, Renderer.RESOLUTION_Y - Background.WALL_HEIGHT + 1, Background.WALL_HEIGHT - 2, Background.WALL_HEIGHT - 2, Color.argb(255, 255, 255, 0));
+
 			restart();
 		}
 	}
@@ -163,11 +177,9 @@ public class Game
 			this.lastWall = null;
 
 			createWall();
-			// createEnemyShooting();
-			createEnemyRotating();
+			createEnemy();
 			createWall();
-			// createEnemyShooting();
-			createEnemyRotating();
+			createEnemy();
 		}
 	}
 	
@@ -256,6 +268,12 @@ public class Game
 			this.wallWidth = Game.WALL_WIDTH_LIMIT;
 		}
 	}
+	
+	private void createEnemy()
+	{
+		createEnemyShooting();
+		createEnemyRotating();
+	}
 
 	private void createEnemyShooting()
 	{
@@ -306,7 +324,18 @@ public class Game
 			x += this.lastWall.getWidth();
 		}
 
-		EnemyRotating enemy = new EnemyRotating(x);
+		EnemyRotating enemy = null;
+
+		if (this.enemySingle)
+		{
+			enemy = new EnemyRotatingSingle(x);
+		}
+		else
+		{
+			enemy = new EnemyRotatingDouble(x);
+		}
+		
+		this.enemySingle = !this.enemySingle;
 		this.enemiesRotating.add(enemy);
 
 		/* Change difficulty */
@@ -342,6 +371,19 @@ public class Game
 			}
 			
 			draw(renderer);
+
+			if (this.inputDebug)
+			{
+				if (input.jumpPressed)
+				{
+					this.inputDebugJump.draw(renderer);
+				}
+				
+				if (input.advancePressed)
+				{
+					this.inputDebugAdvance.draw(renderer);
+				}
+			}
 		}
 	}
 
@@ -461,14 +503,13 @@ public class Game
 
 		for (int i = 0; i < finished; i++)
 		{
-			createEnemyShooting();
+			createEnemy();
 		}
 	}
 
 	private void updateEnemiesRotating(float delta, float distance)
 	{
 		EnemyRotating[] enemyList = Game.getArray(this.enemiesRotating, EnemyRotating.class);
-		int finished = 0;
 
 		for (EnemyRotating enemy : enemyList)
 		{
@@ -477,13 +518,7 @@ public class Game
 			if (enemy.isFinished())
 			{
 				this.enemiesRotating.remove(enemy);
-				finished++;
 			}
-		}
-
-		for (int i = 0; i < finished; i++)
-		{
-			createEnemyRotating();
 		}
 	}
 
