@@ -2,9 +2,12 @@ package com.mauriciotogneri.tensiontunnel.activities;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
+import android.content.IntentSender.SendIntentException;
 import android.graphics.Typeface;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
@@ -12,17 +15,25 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.games.Games;
 import com.mauriciotogneri.tensiontunnel.R;
 import com.mauriciotogneri.tensiontunnel.engine.Game;
 import com.mauriciotogneri.tensiontunnel.engine.Renderer;
 import com.mauriciotogneri.tensiontunnel.statistics.Statistics;
 
 @SuppressLint("ClickableViewAccessibility")
-public class MainActivity extends Activity
+public class MainActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
 {
 	private Game game;
 	private GLSurfaceView screen;
+	private GoogleApiClient apiClient;
+	private boolean intentInProgress = false;
 
+	private static final int REQUEST_RESOLVE_ERROR = 123;
+	private static final String LEADERBOARD_ID = "CgkIwvrPw-ceEAIQAQ";
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -61,6 +72,92 @@ public class MainActivity extends Activity
 		setContentView(layout);
 		
 		Statistics.sendHitAppLaunched();
+		
+		GoogleApiClient.Builder builder = new GoogleApiClient.Builder(this, this, this);
+		builder.addApi(Games.API).addScope(Games.SCOPE_GAMES);
+		this.apiClient = builder.build();
+	}
+	
+	@Override
+	public void onConnected(Bundle connectionHint)
+	{
+		Log.e("LOGIN", "CONNECTED");
+	}
+	
+	@Override
+	public void onConnectionSuspended(int cause)
+	{
+		Log.e("LOGIN", "SUSPENDED");
+	}
+	
+	@Override
+	public void onConnectionFailed(ConnectionResult result)
+	{
+		if ((!this.intentInProgress) && result.hasResolution())
+		{
+			try
+			{
+				this.intentInProgress = true;
+				result.startResolutionForResult(this, MainActivity.REQUEST_RESOLVE_ERROR);
+			}
+			catch (SendIntentException e)
+			{
+				this.intentInProgress = false;
+				this.apiClient.connect();
+			}
+		}
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		if (requestCode == MainActivity.REQUEST_RESOLVE_ERROR)
+		{
+			this.intentInProgress = false;
+			
+			if (resultCode == Activity.RESULT_OK)
+			{
+				if ((!this.apiClient.isConnecting()) && (!this.apiClient.isConnected()))
+				{
+					this.apiClient.connect();
+				}
+				else
+				{
+					Log.e("LOGIN", "CONNECTED!");
+				}
+			}
+			else
+			{
+				Log.e("LOGIN", "RESULT CODE: " + resultCode);
+			}
+		}
+		else if (requestCode == 456)
+		{
+			Log.e("LOGIN", "RESULT FROM OPEN THE RANKING");
+		}
+	}
+
+	public void submitScore(int score)
+	{
+		if (this.apiClient.isConnected())
+		{
+			Games.Leaderboards.submitScore(this.apiClient, MainActivity.LEADERBOARD_ID, score);
+		}
+	}
+	
+	public void showRanking()
+	{
+		if (this.apiClient.isConnected())
+		{
+			Log.e("LOGIN", "SHOWING THE LEADERBOARD");
+			// startActivityForResult(Games.Leaderboards.getLeaderboardIntent(this.apiClient,
+			// MainActivity.LEADERBOARD_ID), 456);
+			startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(this.apiClient), 456);
+		}
+		else
+		{
+			this.apiClient.connect();
+		}
 	}
 
 	private void setFontTextView(TextView textView, Typeface font)
@@ -105,13 +202,18 @@ public class MainActivity extends Activity
 			this.screen.onPause();
 		}
 	}
-
+	
 	@Override
 	protected void onDestroy()
 	{
 		if (this.game != null)
 		{
 			this.game.stop();
+		}
+
+		if ((this.apiClient != null) && this.apiClient.isConnected())
+		{
+			this.apiClient.disconnect();
 		}
 		
 		super.onDestroy();

@@ -2,6 +2,8 @@
 <resources>
 
     <string name="app_name">Tension Tunnel</string>
+
+    <string name="games_api_id">1058582822210</string>
     
     <string name="img_description"></string>
     
