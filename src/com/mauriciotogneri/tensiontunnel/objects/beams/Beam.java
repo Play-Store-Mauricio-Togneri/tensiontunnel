@@ -1,7 +1,8 @@
-package com.mauriciotogneri.tensiontunnel.objects;
+package com.mauriciotogneri.tensiontunnel.objects.beams;
 
 import android.graphics.Color;
 import com.mauriciotogneri.tensiontunnel.engine.Renderer;
+import com.mauriciotogneri.tensiontunnel.objects.MainCharacter;
 import com.mauriciotogneri.tensiontunnel.shapes.Rectangle;
 import com.mauriciotogneri.tensiontunnel.util.GeometryUtils;
 
@@ -12,7 +13,7 @@ public abstract class Beam
 
 	protected static final int COLOR = Color.argb(255, 245, 240, 125);
 	protected static final int BEAM_WIDTH = 1;
-	protected static final int BEAM_HEIGHT = Beam.BEAM_WIDTH * 3;
+	public static final int BEAM_HEIGHT = Beam.BEAM_WIDTH * 3;
 
 	public Beam(Rectangle rectangle, float speed)
 	{
@@ -26,7 +27,7 @@ public abstract class Beam
 		this.rectangle.moveY(delta * this.speed);
 	}
 
-	protected abstract boolean isFinished();
+	public abstract boolean isFinished();
 
 	public boolean collide(MainCharacter mainCharacter)
 	{

@@ -1,6 +1,7 @@
-package com.mauriciotogneri.tensiontunnel.objects;
+package com.mauriciotogneri.tensiontunnel.objects.beams;
 
 import com.mauriciotogneri.tensiontunnel.engine.Renderer;
+import com.mauriciotogneri.tensiontunnel.objects.Background;
 import com.mauriciotogneri.tensiontunnel.shapes.Rectangle;
 
 public class BeamUp extends Beam
@@ -9,9 +10,9 @@ public class BeamUp extends Beam
 	{
 		super(new Rectangle(x, y, Beam.BEAM_WIDTH, Beam.BEAM_HEIGHT, Beam.COLOR), speed);
 	}
-
+	
 	@Override
-	protected boolean isFinished()
+	public boolean isFinished()
 	{
 		return ((this.rectangle.getY() + this.rectangle.getHeight()) > (Renderer.RESOLUTION_Y - Background.WALL_HEIGHT));
 	}

@@ -1,4 +1,4 @@
-package com.mauriciotogneri.tensiontunnel.objects;
+package com.mauriciotogneri.tensiontunnel.objects.score;
 
 import android.graphics.Color;
 import com.mauriciotogneri.tensiontunnel.engine.Renderer;

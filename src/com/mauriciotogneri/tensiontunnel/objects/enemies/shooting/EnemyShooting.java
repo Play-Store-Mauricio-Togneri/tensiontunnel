@@ -1,4 +1,4 @@
-package com.mauriciotogneri.tensiontunnel.objects;
+package com.mauriciotogneri.tensiontunnel.objects.enemies.shooting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,11 +6,13 @@ import android.graphics.Color;
 import com.mauriciotogneri.tensiontunnel.audio.AudioManager;
 import com.mauriciotogneri.tensiontunnel.engine.Game;
 import com.mauriciotogneri.tensiontunnel.engine.Renderer;
+import com.mauriciotogneri.tensiontunnel.objects.MainCharacter;
+import com.mauriciotogneri.tensiontunnel.objects.beams.Beam;
 import com.mauriciotogneri.tensiontunnel.shapes.Rectangle;
 import com.mauriciotogneri.tensiontunnel.util.GeometryUtils;
 import com.mauriciotogneri.tensiontunnel.util.Resources;
 
-public abstract class Enemy
+public abstract class EnemyShooting
 {
 	protected final Rectangle rectangle;
 	
@@ -21,7 +23,7 @@ public abstract class Enemy
 	protected static final int COLOR = Color.argb(255, 120, 220, 120);
 	protected static final int ENEMY_WIDTH = 3;
 
-	public Enemy(Rectangle rectangle, float timeLimit)
+	public EnemyShooting(Rectangle rectangle, float timeLimit)
 	{
 		this.timeLimit = timeLimit;
 		this.rectangle = rectangle;
