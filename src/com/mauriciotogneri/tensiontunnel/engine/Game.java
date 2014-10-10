@@ -38,6 +38,7 @@ public class Game
 	private MainCharacter mainCharacter;
 	private Background background;
 	private Score score;
+	
 	private final List<Wall> walls = new ArrayList<Wall>();
 	private final List<EnemyShooting> enemiesShooting = new ArrayList<EnemyShooting>();
 	private final List<EnemyRotating> enemiesRotating = new ArrayList<EnemyRotating>();
@@ -64,7 +65,7 @@ public class Game
 	private boolean enemyRotatingOpposite = true;
 	
 	// TODO: INPUT DEBUG
-	private final boolean inputDebug = false;
+	private final static boolean INPUT_DEBUG = false;
 	private Rectangle inputDebugJump;
 	private Rectangle inputDebugAdvance;
 	
@@ -72,8 +73,9 @@ public class Game
 	private static final int WALL_WIDTH_INCREMENT = 1;
 	private static final int WALL_WIDTH_LIMIT = 100;
 	
+	private static final int WALL_GAP_INIT_RATIO = 2;
 	private static final int WALL_GAP_DECREMENT = 1;
-	private static final int WALL_GAP_LIMIT = (int)(MainCharacter.CHARACTER_SIZE * (3 / 2f));
+	private static final int WALL_GAP_LIMIT = MainCharacter.CHARACTER_SIZE * 2;
 	
 	private static final int BEAM_SPEED_INIT_VALUE = 40;
 	private static final float BEAM_SPEED_INCREMENT = 0.2f;
@@ -141,6 +143,7 @@ public class Game
 		{
 			this.renderer = renderer;
 			
+			this.mainCharacter = new MainCharacter();
 			this.background = new Background(Renderer.RESOLUTION_X, Renderer.RESOLUTION_Y);
 			this.score = new Score();
 			
@@ -159,7 +162,7 @@ public class Game
 
 			hideBlockScreen();
 			
-			this.mainCharacter = new MainCharacter(Renderer.RESOLUTION_Y / 2);
+			this.mainCharacter.reset();
 			this.score.clear();
 			
 			this.enemiesShooting.clear();
@@ -168,7 +171,7 @@ public class Game
 			
 			this.walls.clear();
 			this.wallWidth = Game.WALL_WIDTH_INIT_VALUE;
-			this.wallGap = Renderer.RESOLUTION_Y / 2;
+			this.wallGap = Renderer.RESOLUTION_Y / Game.WALL_GAP_INIT_RATIO;
 
 			this.rotationSpeed = Game.ROTATION_SPEED_INIT_VALUE;
 			this.enemiesRotating.clear();
@@ -370,7 +373,7 @@ public class Game
 
 			draw(renderer);
 			
-			if (this.inputDebug)
+			if (Game.INPUT_DEBUG)
 			{
 				if (input.jumpPressed)
 				{

@@ -7,8 +7,7 @@ import com.mauriciotogneri.tensiontunnel.shapes.Square;
 
 public class MainCharacter
 {
-	private final Square square;
-
+	private Square square;
 	private float acceleration = 0;
 
 	private static final int GRAVITY = 1;
@@ -16,14 +15,14 @@ public class MainCharacter
 
 	private static final int MAX_ACCELERATION_UP = 30;
 	private static final int MAX_ACCELERATION_DOWN = 30;
-	
+
 	public static final int CHARACTER_SIZE = 3;
 	private static final int CHARACTER_X = 30;
 	private static final int CHARACTER_COLOR = Color.argb(255, 220, 75, 60);
-	
-	public MainCharacter(float y)
+
+	public MainCharacter()
 	{
-		this.square = new Square(MainCharacter.CHARACTER_X, y, MainCharacter.CHARACTER_SIZE, MainCharacter.CHARACTER_COLOR);
+		reset();
 	}
 
 	public void update(float delta, Input input)
@@ -57,5 +56,11 @@ public class MainCharacter
 	public Square getShape()
 	{
 		return this.square;
+	}
+
+	public void reset()
+	{
+		this.acceleration = 0;
+		this.square = new Square(MainCharacter.CHARACTER_X, Renderer.RESOLUTION_Y / 2, MainCharacter.CHARACTER_SIZE, MainCharacter.CHARACTER_COLOR);
 	}
 }
