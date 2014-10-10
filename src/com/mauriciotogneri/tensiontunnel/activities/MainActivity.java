@@ -7,7 +7,6 @@ import android.content.IntentSender.SendIntentException;
 import android.graphics.Typeface;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
@@ -30,66 +29,75 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 	private GLSurfaceView screen;
 	private GoogleApiClient apiClient;
 	private boolean intentInProgress = false;
-
-	private static final int REQUEST_RESOLVE_ERROR = 123;
-	private static final String LEADERBOARD_ID = "CgkIwvrPw-ceEAIQAQ";
+	private boolean openingLeaderboard = false;
 	
+	private static final int REQUEST_RESOLVE_ERROR = 1001;
+	
+	private static final int ACHIVEMENT_1 = 10;
+	private static final int ACHIVEMENT_2 = 20;
+	private static final int ACHIVEMENT_3 = 50;
+	private static final int ACHIVEMENT_4 = 100;
+	private static final int ACHIVEMENT_5 = 200;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		
 		Window window = getWindow();
 		window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		
+
 		FrameLayout layout = new FrameLayout(this);
 		FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 		layout.setLayoutParams(layoutParams);
-
-		Typeface font = Typeface.createFromAsset(getAssets(), "fonts/visitor.ttf");
 		
+		Typeface font = Typeface.createFromAsset(getAssets(), "fonts/visitor.ttf");
+
 		LinearLayout blockScreen = (LinearLayout)View.inflate(this, R.layout.block_screen, null);
 		blockScreen.setVisibility(View.GONE);
-
+		
 		setFontTextView((TextView)blockScreen.findViewById(R.id.label_score), font);
 		setFontTextView((TextView)blockScreen.findViewById(R.id.score), font);
 		setFontTextView((TextView)blockScreen.findViewById(R.id.label_best), font);
 		setFontTextView((TextView)blockScreen.findViewById(R.id.best), font);
-
-		this.game = new Game(this, blockScreen);
 		
+		this.game = new Game(this, blockScreen);
+
 		this.screen = new GLSurfaceView(this);
 		this.screen.setEGLContextClientVersion(2);
-
+		
 		Renderer renderer = new Renderer(this.game, this, this.screen);
 		this.screen.setRenderer(renderer);
-		
+
 		layout.addView(this.screen);
 		layout.addView(blockScreen);
-		
+
 		setContentView(layout);
-		
+
 		Statistics.sendHitAppLaunched();
-		
+
 		GoogleApiClient.Builder builder = new GoogleApiClient.Builder(this, this, this);
 		builder.addApi(Games.API).addScope(Games.SCOPE_GAMES);
 		this.apiClient = builder.build();
 	}
-	
+
 	@Override
 	public void onConnected(Bundle connectionHint)
 	{
-		Log.e("LOGIN", "CONNECTED");
+		if (this.openingLeaderboard)
+		{
+			showRanking();
+		}
 	}
-	
+
 	@Override
 	public void onConnectionSuspended(int cause)
 	{
-		Log.e("LOGIN", "SUSPENDED");
+		this.apiClient.reconnect();
 	}
-	
+
 	@Override
 	public void onConnectionFailed(ConnectionResult result)
 	{
@@ -107,59 +115,67 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 			}
 		}
 	}
-	
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
 		if (requestCode == MainActivity.REQUEST_RESOLVE_ERROR)
 		{
 			this.intentInProgress = false;
-			
+
 			if (resultCode == Activity.RESULT_OK)
 			{
 				if ((!this.apiClient.isConnecting()) && (!this.apiClient.isConnected()))
 				{
 					this.apiClient.connect();
 				}
-				else
-				{
-					Log.e("LOGIN", "CONNECTED!");
-				}
 			}
-			else
-			{
-				Log.e("LOGIN", "RESULT CODE: " + resultCode);
-			}
-		}
-		else if (requestCode == 456)
-		{
-			Log.e("LOGIN", "RESULT FROM OPEN THE RANKING");
 		}
 	}
-
+	
 	public void submitScore(int score)
 	{
 		if (this.apiClient.isConnected())
 		{
-			Games.Leaderboards.submitScore(this.apiClient, MainActivity.LEADERBOARD_ID, score);
+			Games.Leaderboards.submitScore(this.apiClient, getString(R.string.leaderboard_high_score), score);
+
+			if (score >= MainActivity.ACHIVEMENT_5)
+			{
+				Games.Achievements.unlock(this.apiClient, getString(R.string.achievement_200_points));
+			}
+			else if (score >= MainActivity.ACHIVEMENT_4)
+			{
+				Games.Achievements.unlock(this.apiClient, getString(R.string.achievement_100_points));
+			}
+			else if (score >= MainActivity.ACHIVEMENT_3)
+			{
+				Games.Achievements.unlock(this.apiClient, getString(R.string.achievement_50_points));
+			}
+			else if (score >= MainActivity.ACHIVEMENT_2)
+			{
+				Games.Achievements.unlock(this.apiClient, getString(R.string.achievement_20_points));
+			}
+			else if (score >= MainActivity.ACHIVEMENT_1)
+			{
+				Games.Achievements.unlock(this.apiClient, getString(R.string.achievement_10_points));
+			}
 		}
 	}
-	
+
 	public void showRanking()
 	{
 		if (this.apiClient.isConnected())
 		{
-			Log.e("LOGIN", "SHOWING THE LEADERBOARD");
-			// startActivityForResult(Games.Leaderboards.getLeaderboardIntent(this.apiClient,
-			// MainActivity.LEADERBOARD_ID), 456);
-			startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(this.apiClient), 456);
+			this.openingLeaderboard = false;
+			startActivityForResult(Games.Leaderboards.getLeaderboardIntent(this.apiClient, getString(R.string.leaderboard_high_score)), 456);
 		}
 		else
 		{
+			this.openingLeaderboard = true;
 			this.apiClient.connect();
 		}
 	}
-
+	
 	private void setFontTextView(TextView textView, Typeface font)
 	{
 		try
@@ -170,39 +186,39 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 		{
 		}
 	}
-
+	
 	@Override
 	protected void onResume()
 	{
 		super.onResume();
-
+		
 		if (this.game != null)
 		{
 			this.game.resume();
 		}
-		
+
 		if (this.screen != null)
 		{
 			this.screen.onResume();
 		}
 	}
-
+	
 	@Override
 	protected void onPause()
 	{
 		super.onPause();
-
+		
 		if (this.game != null)
 		{
 			this.game.pause(isFinishing());
 		}
-
+		
 		if (this.screen != null)
 		{
 			this.screen.onPause();
 		}
 	}
-	
+
 	@Override
 	protected void onDestroy()
 	{
@@ -210,12 +226,12 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 		{
 			this.game.stop();
 		}
-
+		
 		if ((this.apiClient != null) && this.apiClient.isConnected())
 		{
 			this.apiClient.disconnect();
 		}
-		
+
 		super.onDestroy();
 	}
 }

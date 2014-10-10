@@ -4,6 +4,12 @@
     <string name="app_name">Tension Tunnel</string>
 
     <string name="games_api_id">1058582822210</string>
+    <string name="achievement_10_points">CgkIwvrPw-ceEAIQAg</string>
+ 	<string name="achievement_20_points">CgkIwvrPw-ceEAIQAw</string>
+  	<string name="achievement_50_points">CgkIwvrPw-ceEAIQBA</string>
+  	<string name="achievement_100_points">CgkIwvrPw-ceEAIQBQ</string>
+  	<string name="achievement_200_points">CgkIwvrPw-ceEAIQBg</string>
+  	<string name="leaderboard_high_score">CgkIwvrPw-ceEAIQAQ</string>
     
     <string name="img_description"></string>
     
