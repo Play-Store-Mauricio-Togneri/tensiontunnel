@@ -2,7 +2,7 @@ package com.mauriciotogneri.tensiontunnel.objects.beams;
 
 import android.graphics.Color;
 import com.mauriciotogneri.tensiontunnel.engine.Renderer;
-import com.mauriciotogneri.tensiontunnel.objects.MainCharacter;
+import com.mauriciotogneri.tensiontunnel.objects.Player;
 import com.mauriciotogneri.tensiontunnel.shapes.Rectangle;
 import com.mauriciotogneri.tensiontunnel.util.GeometryUtils;
 
@@ -29,9 +29,9 @@ public abstract class Beam
 
 	public abstract boolean isFinished();
 
-	public boolean collide(MainCharacter mainCharacter)
+	public boolean collide(Player player)
 	{
-		return GeometryUtils.collide(this.rectangle, mainCharacter.getShape());
+		return GeometryUtils.collide(this.rectangle, player.getShape());
 	}
 	
 	public void draw(Renderer renderer)

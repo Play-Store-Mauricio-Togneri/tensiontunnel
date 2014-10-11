@@ -3,6 +3,7 @@ package com.mauriciotogneri.tensiontunnel.objects.score;
 import android.graphics.Color;
 import com.mauriciotogneri.tensiontunnel.engine.Renderer;
 import com.mauriciotogneri.tensiontunnel.shapes.Rectangle;
+import com.mauriciotogneri.tensiontunnel.util.Constants;
 
 public class Digit
 {
@@ -16,16 +17,16 @@ public class Digit
 	private final Seven seven;
 	private final Eight eight;
 	private final Nine nine;
-	
+
 	public static final int DIGIT_WIDTH = 4;
 	private static final int DIGIT_HEIGHT = 5;
-	
-	private static final int COLOR = Color.WHITE;
 
+	private static final int COLOR = Color.WHITE;
+	
 	public Digit(float x)
 	{
-		float y = Renderer.RESOLUTION_Y - Digit.DIGIT_HEIGHT - 1;
-		
+		float y = Constants.Screen.RESOLUTION_Y - Digit.DIGIT_HEIGHT - 1;
+
 		this.one = new One(x, y);
 		this.zero = new Zero(x, y);
 		this.two = new Two(x, y);
@@ -37,7 +38,7 @@ public class Digit
 		this.eight = new Eight(x, y);
 		this.nine = new Nine(x, y);
 	}
-
+	
 	public void draw(Renderer renderer, char value)
 	{
 		if (value == '0')
@@ -81,11 +82,11 @@ public class Digit
 			this.nine.draw(renderer);
 		}
 	}
-
+	
 	private static Rectangle getSection(int id, float x, float y)
 	{
 		Rectangle result = null;
-		
+
 		if (id == 1)
 		{
 			result = new Rectangle(x, y + 4, Digit.DIGIT_WIDTH, 1, Digit.COLOR);
@@ -114,10 +115,10 @@ public class Digit
 		{
 			result = new Rectangle(x + 3, y, 1, 3, Digit.COLOR);
 		}
-
+		
 		return result;
 	}
-	
+
 	private class Zero
 	{
 		private final Rectangle rectangle1;
@@ -126,7 +127,7 @@ public class Digit
 		private final Rectangle rectangle4;
 		private final Rectangle rectangle5;
 		private final Rectangle rectangle6;
-		
+
 		public Zero(float x, float y)
 		{
 			this.rectangle1 = Digit.getSection(1, x, y);
@@ -136,7 +137,7 @@ public class Digit
 			this.rectangle5 = Digit.getSection(6, x, y);
 			this.rectangle6 = Digit.getSection(7, x, y);
 		}
-		
+
 		public void draw(Renderer renderer)
 		{
 			this.rectangle1.draw(renderer);
@@ -147,25 +148,25 @@ public class Digit
 			this.rectangle6.draw(renderer);
 		}
 	}
-
+	
 	private class One
 	{
 		private final Rectangle rectangle1;
 		private final Rectangle rectangle2;
-		
+
 		public One(float x, float y)
 		{
 			this.rectangle1 = Digit.getSection(5, x, y);
 			this.rectangle2 = Digit.getSection(7, x, y);
 		}
-		
+
 		public void draw(Renderer renderer)
 		{
 			this.rectangle1.draw(renderer);
 			this.rectangle2.draw(renderer);
 		}
 	}
-
+	
 	private class Two
 	{
 		private final Rectangle rectangle1;
@@ -173,7 +174,7 @@ public class Digit
 		private final Rectangle rectangle3;
 		private final Rectangle rectangle4;
 		private final Rectangle rectangle5;
-		
+
 		public Two(float x, float y)
 		{
 			this.rectangle1 = Digit.getSection(1, x, y);
@@ -182,7 +183,7 @@ public class Digit
 			this.rectangle4 = Digit.getSection(5, x, y);
 			this.rectangle5 = Digit.getSection(6, x, y);
 		}
-		
+
 		public void draw(Renderer renderer)
 		{
 			this.rectangle1.draw(renderer);
@@ -192,7 +193,7 @@ public class Digit
 			this.rectangle5.draw(renderer);
 		}
 	}
-	
+
 	private class Three
 	{
 		private final Rectangle rectangle1;
@@ -200,7 +201,7 @@ public class Digit
 		private final Rectangle rectangle3;
 		private final Rectangle rectangle4;
 		private final Rectangle rectangle5;
-		
+
 		public Three(float x, float y)
 		{
 			this.rectangle1 = Digit.getSection(1, x, y);
@@ -209,7 +210,7 @@ public class Digit
 			this.rectangle4 = Digit.getSection(5, x, y);
 			this.rectangle5 = Digit.getSection(7, x, y);
 		}
-		
+
 		public void draw(Renderer renderer)
 		{
 			this.rectangle1.draw(renderer);
@@ -219,14 +220,14 @@ public class Digit
 			this.rectangle5.draw(renderer);
 		}
 	}
-	
+
 	private class Four
 	{
 		private final Rectangle rectangle1;
 		private final Rectangle rectangle2;
 		private final Rectangle rectangle3;
 		private final Rectangle rectangle4;
-		
+
 		public Four(float x, float y)
 		{
 			this.rectangle1 = Digit.getSection(2, x, y);
@@ -234,7 +235,7 @@ public class Digit
 			this.rectangle3 = Digit.getSection(5, x, y);
 			this.rectangle4 = Digit.getSection(7, x, y);
 		}
-		
+
 		public void draw(Renderer renderer)
 		{
 			this.rectangle1.draw(renderer);
@@ -243,7 +244,7 @@ public class Digit
 			this.rectangle4.draw(renderer);
 		}
 	}
-	
+
 	private class Five
 	{
 		private final Rectangle rectangle1;
@@ -251,7 +252,7 @@ public class Digit
 		private final Rectangle rectangle3;
 		private final Rectangle rectangle4;
 		private final Rectangle rectangle5;
-		
+
 		public Five(float x, float y)
 		{
 			this.rectangle1 = Digit.getSection(1, x, y);
@@ -260,7 +261,7 @@ public class Digit
 			this.rectangle4 = Digit.getSection(4, x, y);
 			this.rectangle5 = Digit.getSection(7, x, y);
 		}
-		
+
 		public void draw(Renderer renderer)
 		{
 			this.rectangle1.draw(renderer);
@@ -270,7 +271,7 @@ public class Digit
 			this.rectangle5.draw(renderer);
 		}
 	}
-	
+
 	private class Six
 	{
 		private final Rectangle rectangle1;
@@ -279,7 +280,7 @@ public class Digit
 		private final Rectangle rectangle4;
 		private final Rectangle rectangle5;
 		private final Rectangle rectangle6;
-		
+
 		public Six(float x, float y)
 		{
 			this.rectangle1 = Digit.getSection(1, x, y);
@@ -289,7 +290,7 @@ public class Digit
 			this.rectangle5 = Digit.getSection(6, x, y);
 			this.rectangle6 = Digit.getSection(7, x, y);
 		}
-		
+
 		public void draw(Renderer renderer)
 		{
 			this.rectangle1.draw(renderer);
@@ -300,20 +301,20 @@ public class Digit
 			this.rectangle6.draw(renderer);
 		}
 	}
-	
+
 	private class Seven
 	{
 		private final Rectangle rectangle1;
 		private final Rectangle rectangle2;
 		private final Rectangle rectangle3;
-		
+
 		public Seven(float x, float y)
 		{
 			this.rectangle1 = Digit.getSection(1, x, y);
 			this.rectangle2 = Digit.getSection(5, x, y);
 			this.rectangle3 = Digit.getSection(7, x, y);
 		}
-		
+
 		public void draw(Renderer renderer)
 		{
 			this.rectangle1.draw(renderer);
@@ -321,7 +322,7 @@ public class Digit
 			this.rectangle3.draw(renderer);
 		}
 	}
-	
+
 	private class Eight
 	{
 		private final Rectangle rectangle1;
@@ -331,7 +332,7 @@ public class Digit
 		private final Rectangle rectangle5;
 		private final Rectangle rectangle6;
 		private final Rectangle rectangle7;
-		
+
 		public Eight(float x, float y)
 		{
 			this.rectangle1 = Digit.getSection(1, x, y);
@@ -342,7 +343,7 @@ public class Digit
 			this.rectangle6 = Digit.getSection(6, x, y);
 			this.rectangle7 = Digit.getSection(7, x, y);
 		}
-		
+
 		public void draw(Renderer renderer)
 		{
 			this.rectangle1.draw(renderer);
@@ -354,7 +355,7 @@ public class Digit
 			this.rectangle7.draw(renderer);
 		}
 	}
-
+	
 	private class Nine
 	{
 		private final Rectangle rectangle1;
@@ -363,7 +364,7 @@ public class Digit
 		private final Rectangle rectangle4;
 		private final Rectangle rectangle5;
 		private final Rectangle rectangle6;
-		
+
 		public Nine(float x, float y)
 		{
 			this.rectangle1 = Digit.getSection(1, x, y);
@@ -373,7 +374,7 @@ public class Digit
 			this.rectangle5 = Digit.getSection(5, x, y);
 			this.rectangle6 = Digit.getSection(7, x, y);
 		}
-		
+
 		public void draw(Renderer renderer)
 		{
 			this.rectangle1.draw(renderer);

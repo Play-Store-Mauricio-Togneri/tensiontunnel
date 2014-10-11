@@ -18,7 +18,7 @@ import com.mauriciotogneri.tensiontunnel.activities.MainActivity;
 import com.mauriciotogneri.tensiontunnel.audio.AudioManager;
 import com.mauriciotogneri.tensiontunnel.input.Input;
 import com.mauriciotogneri.tensiontunnel.objects.Background;
-import com.mauriciotogneri.tensiontunnel.objects.MainCharacter;
+import com.mauriciotogneri.tensiontunnel.objects.Player;
 import com.mauriciotogneri.tensiontunnel.objects.Wall;
 import com.mauriciotogneri.tensiontunnel.objects.enemies.rotating.EnemyRotating;
 import com.mauriciotogneri.tensiontunnel.objects.enemies.rotating.EnemyRotating.Direction;
@@ -28,6 +28,7 @@ import com.mauriciotogneri.tensiontunnel.objects.enemies.shooting.EnemyShootingT
 import com.mauriciotogneri.tensiontunnel.objects.score.Score;
 import com.mauriciotogneri.tensiontunnel.shapes.Rectangle;
 import com.mauriciotogneri.tensiontunnel.statistics.Statistics;
+import com.mauriciotogneri.tensiontunnel.util.Constants;
 import com.mauriciotogneri.tensiontunnel.util.Resources;
 
 public class Game
@@ -35,7 +36,7 @@ public class Game
 	private final MainActivity mainActivity;
 	private Renderer renderer;
 	
-	private MainCharacter mainCharacter;
+	private Player player;
 	private Background background;
 	private Score score;
 	
@@ -75,7 +76,7 @@ public class Game
 	
 	private static final int WALL_GAP_INIT_RATIO = 2;
 	private static final int WALL_GAP_DECREMENT = 1;
-	private static final int WALL_GAP_LIMIT = MainCharacter.CHARACTER_SIZE * 2;
+	private static final int WALL_GAP_LIMIT = Player.SIZE * 2;
 	
 	private static final int BEAM_SPEED_INIT_VALUE = 40;
 	private static final float BEAM_SPEED_INCREMENT = 0.2f;
@@ -143,12 +144,12 @@ public class Game
 		{
 			this.renderer = renderer;
 			
-			this.mainCharacter = new MainCharacter();
-			this.background = new Background(Renderer.RESOLUTION_X, Renderer.RESOLUTION_Y);
+			this.player = new Player();
+			this.background = new Background(Constants.Screen.RESOLUTION_X, Constants.Screen.RESOLUTION_Y);
 			this.score = new Score();
 			
-			this.inputDebugJump = new Rectangle(5, Renderer.RESOLUTION_Y - Background.WALL_HEIGHT + 1, Background.WALL_HEIGHT - 2, Background.WALL_HEIGHT - 2, Color.argb(255, 0, 255, 255));
-			this.inputDebugAdvance = new Rectangle(20 + Background.WALL_HEIGHT, Renderer.RESOLUTION_Y - Background.WALL_HEIGHT + 1, Background.WALL_HEIGHT - 2, Background.WALL_HEIGHT - 2, Color.argb(255, 255, 255, 0));
+			this.inputDebugJump = new Rectangle(5, Constants.Screen.RESOLUTION_Y - Background.WALL_HEIGHT + 1, Background.WALL_HEIGHT - 2, Background.WALL_HEIGHT - 2, Color.argb(255, 0, 255, 255));
+			this.inputDebugAdvance = new Rectangle(20 + Background.WALL_HEIGHT, Constants.Screen.RESOLUTION_Y - Background.WALL_HEIGHT + 1, Background.WALL_HEIGHT - 2, Background.WALL_HEIGHT - 2, Color.argb(255, 255, 255, 0));
 			
 			restart();
 		}
@@ -162,12 +163,12 @@ public class Game
 
 			hideBlockScreen();
 			
-			this.mainCharacter.reset();
+			this.player.reset();
 			this.score.clear();
 			
 			this.walls.clear();
 			this.wallWidth = Game.WALL_WIDTH_INIT_VALUE;
-			this.wallGap = Renderer.RESOLUTION_Y / Game.WALL_GAP_INIT_RATIO;
+			this.wallGap = Constants.Screen.RESOLUTION_Y / Game.WALL_GAP_INIT_RATIO;
 
 			this.enemiesShooting.clear();
 			this.beamSpeed = Game.BEAM_SPEED_INIT_VALUE;
@@ -239,16 +240,16 @@ public class Game
 	
 	private void createWall()
 	{
-		float x = Renderer.RESOLUTION_X;
+		float x = Constants.Screen.RESOLUTION_X;
 
 		if (this.lastWall != null)
 		{
 			x += this.lastWall.getWidth();
 		}
 
-		int deviationLimit = (Renderer.RESOLUTION_Y / 2) - (this.wallGap / 2) - Background.WALL_HEIGHT + 1;
+		int deviationLimit = (Constants.Screen.RESOLUTION_Y / 2) - (this.wallGap / 2) - Background.WALL_HEIGHT + 1;
 		int centerDeviation = random(0, deviationLimit);
-		int center = random((Renderer.RESOLUTION_Y / 2) - centerDeviation, (Renderer.RESOLUTION_Y / 2) + centerDeviation);
+		int center = random((Constants.Screen.RESOLUTION_Y / 2) - centerDeviation, (Constants.Screen.RESOLUTION_Y / 2) + centerDeviation);
 
 		this.lastWall = new Wall(x, center, this.wallGap, this.wallWidth);
 		this.walls.add(this.lastWall);
@@ -278,7 +279,7 @@ public class Game
 	
 	private void createEnemyShooting()
 	{
-		float x = Renderer.RESOLUTION_X / 2;
+		float x = Constants.Screen.RESOLUTION_X / 2;
 		
 		if (this.lastWall != null)
 		{
@@ -318,7 +319,7 @@ public class Game
 	
 	private void createEnemyRotating()
 	{
-		float x = Renderer.RESOLUTION_X / 2;
+		float x = Constants.Screen.RESOLUTION_X / 2;
 		
 		if (this.lastWall != null)
 		{
@@ -397,14 +398,14 @@ public class Game
 		updateWalls(distance);
 		updateEnemiesShooting(delta, distance);
 		updateEnemiesRotating(delta, distance);
-		updateCharacter(delta, input);
+		updatePlayer(delta, input);
 		
 		checkCollision(input);
 	}
 	
 	private void checkCollision(Input input)
 	{
-		if (this.background.collide(this.mainCharacter) || collideWithWall() || collideWithEnemy())
+		if (this.background.collide(this.player) || collideWithWall() || collideWithEnemy())
 		{
 			processCollision(input);
 		}
@@ -416,7 +417,7 @@ public class Game
 		
 		for (Wall wall : this.walls)
 		{
-			if (wall.collide(this.mainCharacter))
+			if (wall.collide(this.player))
 			{
 				result = true;
 				break;
@@ -432,7 +433,7 @@ public class Game
 		
 		for (EnemyShooting enemy : this.enemiesShooting)
 		{
-			if (enemy.collide(this.mainCharacter))
+			if (enemy.collide(this.player))
 			{
 				result = true;
 				break;
@@ -443,7 +444,7 @@ public class Game
 		{
 			for (EnemyRotating enemy : this.enemiesRotating)
 			{
-				if (enemy.collide(this.mainCharacter))
+				if (enemy.collide(this.player))
 				{
 					result = true;
 					break;
@@ -532,9 +533,9 @@ public class Game
 		return array;
 	}
 	
-	private void updateCharacter(float delta, Input input)
+	private void updatePlayer(float delta, Input input)
 	{
-		this.mainCharacter.update(delta, input);
+		this.player.update(delta, input);
 	}
 	
 	private float getDistance(float delta, Input input)
@@ -584,7 +585,7 @@ public class Game
 			this.score.draw(renderer);
 		}
 		
-		this.mainCharacter.draw(renderer);
+		this.player.draw(renderer);
 	}
 	
 	// ======================== LIFE CYCLE ====================== \\

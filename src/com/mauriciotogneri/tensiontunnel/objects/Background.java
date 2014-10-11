@@ -56,15 +56,15 @@ public class Background
 		}
 	}
 	
-	public boolean collide(MainCharacter mainCharacter)
+	public boolean collide(Player player)
 	{
 		boolean result = false;
 		
-		if (GeometryUtils.collide(mainCharacter.getShape(), this.wallTop))
+		if (GeometryUtils.collide(player.getShape(), this.wallTop))
 		{
 			result = true;
 		}
-		else if (GeometryUtils.collide(mainCharacter.getShape(), this.wallBottom))
+		else if (GeometryUtils.collide(player.getShape(), this.wallBottom))
 		{
 			result = true;
 		}
