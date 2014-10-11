@@ -165,16 +165,16 @@ public class Game
 			this.mainCharacter.reset();
 			this.score.clear();
 			
-			this.enemiesShooting.clear();
-			this.beamSpeed = Game.BEAM_SPEED_INIT_VALUE;
-			this.beamFrequency = Game.BEAM_FREQUENCY_INIT_VALUE;
-			
 			this.walls.clear();
 			this.wallWidth = Game.WALL_WIDTH_INIT_VALUE;
 			this.wallGap = Renderer.RESOLUTION_Y / Game.WALL_GAP_INIT_RATIO;
 
-			this.rotationSpeed = Game.ROTATION_SPEED_INIT_VALUE;
+			this.enemiesShooting.clear();
+			this.beamSpeed = Game.BEAM_SPEED_INIT_VALUE;
+			this.beamFrequency = Game.BEAM_FREQUENCY_INIT_VALUE;
+			
 			this.enemiesRotating.clear();
+			this.rotationSpeed = Game.ROTATION_SPEED_INIT_VALUE;
 
 			this.lastWall = null;
 			
