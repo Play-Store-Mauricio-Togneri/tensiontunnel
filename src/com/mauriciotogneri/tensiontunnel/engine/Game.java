@@ -28,7 +28,6 @@ import com.mauriciotogneri.tensiontunnel.objects.enemies.shooting.EnemyShootingT
 import com.mauriciotogneri.tensiontunnel.objects.score.Score;
 import com.mauriciotogneri.tensiontunnel.shapes.Rectangle;
 import com.mauriciotogneri.tensiontunnel.statistics.Statistics;
-import com.mauriciotogneri.tensiontunnel.util.Constants;
 import com.mauriciotogneri.tensiontunnel.util.Resources;
 
 public class Game
@@ -66,7 +65,7 @@ public class Game
 	private boolean enemyRotatingOpposite = true;
 	
 	// TODO: INPUT DEBUG
-	private final static boolean INPUT_DEBUG = false;
+	private final static boolean INPUT_DEBUG = true;
 	private Rectangle inputDebugJump;
 	private Rectangle inputDebugAdvance;
 	
@@ -76,7 +75,7 @@ public class Game
 	
 	private static final int WALL_GAP_INIT_RATIO = 2;
 	private static final int WALL_GAP_DECREMENT = 1;
-	private static final int WALL_GAP_LIMIT = Player.SIZE * 2;
+	private static final int WALL_GAP_LIMIT = Player.getSize() * 2;
 	
 	private static final int BEAM_SPEED_INIT_VALUE = 40;
 	private static final float BEAM_SPEED_INCREMENT = 0.2f;
@@ -98,6 +97,10 @@ public class Game
 		INIT, RUNNING, COLLIDE
 	}
 	
+	// TODO:
+	// make the counter when the user passes a wall (play a sound when it happens)
+	// reset the leaderboard
+	// https://developers.google.com/games/services/management/api/scores/resetForAllPlayers
 	public Game(MainActivity mainActivity, LinearLayout blockScreen)
 	{
 		this.mainActivity = mainActivity;
@@ -145,11 +148,11 @@ public class Game
 			this.renderer = renderer;
 			
 			this.player = new Player();
-			this.background = new Background(Constants.Screen.RESOLUTION_X, Constants.Screen.RESOLUTION_Y);
+			this.background = new Background(Renderer.RESOLUTION_X, Renderer.RESOLUTION_Y);
 			this.score = new Score();
 			
-			this.inputDebugJump = new Rectangle(5, Constants.Screen.RESOLUTION_Y - Background.WALL_HEIGHT + 1, Background.WALL_HEIGHT - 2, Background.WALL_HEIGHT - 2, Color.argb(255, 0, 255, 255));
-			this.inputDebugAdvance = new Rectangle(20 + Background.WALL_HEIGHT, Constants.Screen.RESOLUTION_Y - Background.WALL_HEIGHT + 1, Background.WALL_HEIGHT - 2, Background.WALL_HEIGHT - 2, Color.argb(255, 255, 255, 0));
+			this.inputDebugJump = new Rectangle(5, Renderer.RESOLUTION_Y - Background.getHeight() + 1, Background.getHeight() - 2, Background.getHeight() - 2, Color.argb(255, 0, 255, 255));
+			this.inputDebugAdvance = new Rectangle(20 + Background.getHeight(), Renderer.RESOLUTION_Y - Background.getHeight() + 1, Background.getHeight() - 2, Background.getHeight() - 2, Color.argb(255, 255, 255, 0));
 			
 			restart();
 		}
@@ -168,7 +171,7 @@ public class Game
 			
 			this.walls.clear();
 			this.wallWidth = Game.WALL_WIDTH_INIT_VALUE;
-			this.wallGap = Constants.Screen.RESOLUTION_Y / Game.WALL_GAP_INIT_RATIO;
+			this.wallGap = Renderer.RESOLUTION_Y / Game.WALL_GAP_INIT_RATIO;
 
 			this.enemiesShooting.clear();
 			this.beamSpeed = Game.BEAM_SPEED_INIT_VALUE;
@@ -213,8 +216,6 @@ public class Game
 			editor.commit();
 		}
 		
-		Statistics.sendHitFinishGame(currentScore);
-		
 		this.mainActivity.submitScore(currentScore);
 		
 		TextView scoreView = (TextView)this.blockScreen.findViewById(R.id.score);
@@ -240,16 +241,16 @@ public class Game
 	
 	private void createWall()
 	{
-		float x = Constants.Screen.RESOLUTION_X;
+		float x = Renderer.RESOLUTION_X;
 
 		if (this.lastWall != null)
 		{
 			x += this.lastWall.getWidth();
 		}
 
-		int deviationLimit = (Constants.Screen.RESOLUTION_Y / 2) - (this.wallGap / 2) - Background.WALL_HEIGHT + 1;
+		int deviationLimit = (Renderer.RESOLUTION_Y / 2) - (this.wallGap / 2) - Background.getHeight() + 1;
 		int centerDeviation = random(0, deviationLimit);
-		int center = random((Constants.Screen.RESOLUTION_Y / 2) - centerDeviation, (Constants.Screen.RESOLUTION_Y / 2) + centerDeviation);
+		int center = random((Renderer.RESOLUTION_Y / 2) - centerDeviation, (Renderer.RESOLUTION_Y / 2) + centerDeviation);
 
 		this.lastWall = new Wall(x, center, this.wallGap, this.wallWidth);
 		this.walls.add(this.lastWall);
@@ -279,7 +280,7 @@ public class Game
 	
 	private void createEnemyShooting()
 	{
-		float x = Constants.Screen.RESOLUTION_X / 2;
+		float x = Renderer.RESOLUTION_X / 2;
 		
 		if (this.lastWall != null)
 		{
@@ -319,7 +320,7 @@ public class Game
 	
 	private void createEnemyRotating()
 	{
-		float x = Constants.Screen.RESOLUTION_X / 2;
+		float x = Renderer.RESOLUTION_X / 2;
 		
 		if (this.lastWall != null)
 		{

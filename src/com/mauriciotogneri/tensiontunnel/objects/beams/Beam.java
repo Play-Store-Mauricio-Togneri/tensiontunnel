@@ -12,8 +12,8 @@ public abstract class Beam
 	private final float speed;
 
 	protected static final int COLOR = Color.argb(255, 245, 240, 125);
-	protected static final int BEAM_WIDTH = 1;
-	public static final int BEAM_HEIGHT = Beam.BEAM_WIDTH * 3;
+	protected static final int WIDTH = 1;
+	protected static final int HEIGHT = Beam.WIDTH * 3;
 
 	public Beam(Rectangle rectangle, float speed)
 	{
@@ -37,5 +37,10 @@ public abstract class Beam
 	public void draw(Renderer renderer)
 	{
 		this.rectangle.draw(renderer);
+	}
+
+	public static int getHeight()
+	{
+		return Beam.HEIGHT;
 	}
 }

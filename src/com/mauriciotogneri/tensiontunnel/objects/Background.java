@@ -18,12 +18,12 @@ public class Background
 	private final Rectangle wallBottom;
 	
 	private static final int SHAPE_WIDTH = 120;
-	public static final int WALL_HEIGHT = 7;
+	private static final int WALL_HEIGHT = 7;
 	private static final int NUMBER_OF_SHAPES = 2;
 
 	private static final int COLOR_WALL = Color.argb(255, 90, 110, 120);
 	private static final int COLOR_BASE = Color.argb(255, 170, 160, 210);
-	private static final int COLOR_SHAPES = Color.argb(255, 165, 155, 205);
+	private static final int COLOR_SHAPE = Color.argb(255, 165, 155, 205);
 
 	public Background(int width, int height)
 	{
@@ -89,12 +89,17 @@ public class Background
 		points1[0] = new PointF(0, 0);
 		points1[1] = new PointF(Background.SHAPE_WIDTH / 2f, height);
 		points1[2] = new PointF(Background.SHAPE_WIDTH, 0);
-		this.polygon1 = new Polygon(Background.COLOR_SHAPES, points1);
+		this.polygon1 = new Polygon(Background.COLOR_SHAPE, points1);
 		
 		PointF[] points2 = new PointF[3];
 		points2[0] = new PointF(Background.SHAPE_WIDTH, 0);
 		points2[1] = new PointF(Background.SHAPE_WIDTH * (3f / 2f), height);
 		points2[2] = new PointF(Background.SHAPE_WIDTH * 2, 0);
-		this.polygon2 = new Polygon(Background.COLOR_SHAPES, points2);
+		this.polygon2 = new Polygon(Background.COLOR_SHAPE, points2);
+	}
+	
+	public static int getHeight()
+	{
+		return Background.WALL_HEIGHT;
 	}
 }

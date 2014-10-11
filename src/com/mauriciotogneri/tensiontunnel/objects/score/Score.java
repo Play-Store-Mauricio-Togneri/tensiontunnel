@@ -1,7 +1,6 @@
 package com.mauriciotogneri.tensiontunnel.objects.score;
 
 import com.mauriciotogneri.tensiontunnel.engine.Renderer;
-import com.mauriciotogneri.tensiontunnel.util.Constants;
 
 public class Score
 {
@@ -15,11 +14,11 @@ public class Score
 
 	public Score()
 	{
-		this.digit1 = new Digit(Constants.Screen.RESOLUTION_X - (Digit.DIGIT_WIDTH + 1));
-		this.digit2 = new Digit(Constants.Screen.RESOLUTION_X - ((Digit.DIGIT_WIDTH + 1) * 2));
-		this.digit3 = new Digit(Constants.Screen.RESOLUTION_X - ((Digit.DIGIT_WIDTH + 1) * 3));
-		this.digit4 = new Digit(Constants.Screen.RESOLUTION_X - ((Digit.DIGIT_WIDTH + 1) * 4));
-		this.digit5 = new Digit(Constants.Screen.RESOLUTION_X - ((Digit.DIGIT_WIDTH + 1) * 5));
+		this.digit1 = new Digit(Renderer.RESOLUTION_X - (Digit.getHeight() + 1));
+		this.digit2 = new Digit(Renderer.RESOLUTION_X - ((Digit.getHeight() + 1) * 2));
+		this.digit3 = new Digit(Renderer.RESOLUTION_X - ((Digit.getHeight() + 1) * 3));
+		this.digit4 = new Digit(Renderer.RESOLUTION_X - ((Digit.getHeight() + 1) * 4));
+		this.digit5 = new Digit(Renderer.RESOLUTION_X - ((Digit.getHeight() + 1) * 5));
 	}
 
 	public void add(float value)

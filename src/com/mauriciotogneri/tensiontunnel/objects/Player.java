@@ -4,7 +4,6 @@ import android.graphics.Color;
 import com.mauriciotogneri.tensiontunnel.engine.Renderer;
 import com.mauriciotogneri.tensiontunnel.input.Input;
 import com.mauriciotogneri.tensiontunnel.shapes.Square;
-import com.mauriciotogneri.tensiontunnel.util.Constants;
 
 public class Player
 {
@@ -17,7 +16,7 @@ public class Player
 	private static final int MAX_ACCELERATION_UP = 30;
 	private static final int MAX_ACCELERATION_DOWN = 30;
 	
-	public static final int SIZE = 3;
+	private static final int SIZE = 3;
 	private static final int X = 30;
 	private static final int COLOR = Color.argb(255, 220, 75, 60);
 	
@@ -62,6 +61,11 @@ public class Player
 	public void reset()
 	{
 		this.acceleration = 0;
-		this.square = new Square(Player.X, Constants.Screen.RESOLUTION_Y / 2, Player.SIZE, Player.COLOR);
+		this.square = new Square(Player.X, Renderer.RESOLUTION_Y / 2, Player.SIZE, Player.COLOR);
+	}
+	
+	public static int getSize()
+	{
+		return Player.SIZE;
 	}
 }
