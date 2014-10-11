@@ -8,32 +8,40 @@ import com.mauriciotogneri.tensiontunnel.engine.Game;
 import com.mauriciotogneri.tensiontunnel.engine.Renderer;
 import com.mauriciotogneri.tensiontunnel.objects.Player;
 import com.mauriciotogneri.tensiontunnel.objects.beams.Beam;
-import com.mauriciotogneri.tensiontunnel.shapes.Rectangle;
+import com.mauriciotogneri.tensiontunnel.shapes.Square;
 import com.mauriciotogneri.tensiontunnel.util.GeometryUtils;
 import com.mauriciotogneri.tensiontunnel.util.Resources;
 
 public abstract class EnemyShooting
 {
-	protected final Rectangle rectangle;
+	protected final Square squareExternal;
+	private final Square squareInternal;
 	
 	private float timeCounter = 0;
 	private final float timeLimit;
 	private final List<Beam> beams = new ArrayList<Beam>();
 
-	protected static final int COLOR = Color.argb(255, 120, 220, 120);
-	protected static final int SIZE = 3;
+	private static final int COLOR_EXTERNAL = Color.argb(255, 110, 210, 110);
+	private static final int COLOR_INTERNAL = Color.argb(255, 120, 220, 120);
+	
+	protected static final int SIZE_EXTERNAL = 3;
+	private static final int SIZE_INTERNAL = 2;
+	private static final float HALF_SIZE_DIFFERENCE = (EnemyShooting.SIZE_EXTERNAL - EnemyShooting.SIZE_INTERNAL) / 2f;
 
-	public EnemyShooting(Rectangle rectangle, float timeLimit)
+	public EnemyShooting(float x, float y, float timeLimit)
 	{
 		this.timeLimit = timeLimit;
-		this.rectangle = rectangle;
+		
+		this.squareExternal = new Square(x, y, EnemyShooting.SIZE_EXTERNAL, EnemyShooting.COLOR_EXTERNAL);
+		this.squareInternal = new Square(x + EnemyShooting.HALF_SIZE_DIFFERENCE, y + EnemyShooting.HALF_SIZE_DIFFERENCE, EnemyShooting.SIZE_INTERNAL, EnemyShooting.COLOR_INTERNAL);
 	}
 
 	public void update(float delta, float distance, float beamSpeed)
 	{
-		this.rectangle.moveX(-distance);
+		this.squareExternal.moveX(-distance);
+		this.squareInternal.moveX(-distance);
 
-		if (this.rectangle.getX() < (Renderer.RESOLUTION_X * 1.5f))
+		if (this.squareExternal.getX() < (Renderer.RESOLUTION_X * 1.5f))
 		{
 			this.timeCounter += delta;
 
@@ -72,7 +80,7 @@ public abstract class EnemyShooting
 
 	public boolean isFinished()
 	{
-		return ((this.rectangle.getX() + this.rectangle.getWidth()) < 0);
+		return ((this.squareExternal.getX() + this.squareExternal.getWidth()) < 0);
 	}
 
 	public void destroy()
@@ -82,12 +90,12 @@ public abstract class EnemyShooting
 
 	public float getWidth()
 	{
-		return this.rectangle.getX() + this.rectangle.getWidth();
+		return this.squareExternal.getX() + this.squareExternal.getWidth();
 	}
 
 	public boolean collide(Player player)
 	{
-		boolean result = GeometryUtils.collide(this.rectangle, player.getShape());
+		boolean result = GeometryUtils.collide(this.squareExternal, player.getShape());
 
 		if (!result)
 		{
@@ -106,12 +114,13 @@ public abstract class EnemyShooting
 
 	public boolean insideScreen()
 	{
-		return this.rectangle.insideScreen(Renderer.RESOLUTION_X);
+		return this.squareExternal.insideScreen(Renderer.RESOLUTION_X);
 	}
 
 	public void draw(Renderer renderer)
 	{
-		this.rectangle.draw(renderer);
+		this.squareExternal.draw(renderer);
+		this.squareInternal.draw(renderer);
 
 		for (Beam beam : this.beams)
 		{
