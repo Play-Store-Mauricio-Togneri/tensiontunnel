@@ -8,6 +8,7 @@ import com.mauriciotogneri.tensiontunnel.util.GeometryUtils;
 public class Wall
 {
 	private boolean passed = false;
+	private final float center;
 	private final Rectangle rectangleTop;
 	private final Rectangle rectangleBottom;
 	
@@ -15,6 +16,8 @@ public class Wall
 
 	public Wall(float x, float center, float gap, float wallWidth)
 	{
+		this.center = center;
+		
 		float y = center + (gap / 2f);
 		this.rectangleTop = new Rectangle(x, y, wallWidth, Renderer.RESOLUTION_Y - y, Wall.COLOR);
 		
@@ -52,6 +55,11 @@ public class Wall
 	public float getWidth()
 	{
 		return this.rectangleTop.getX() + this.rectangleTop.getWidth();
+	}
+	
+	public float getCenter()
+	{
+		return this.center;
 	}
 
 	public boolean collide(Player player)

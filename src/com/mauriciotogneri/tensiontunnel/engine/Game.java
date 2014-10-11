@@ -18,6 +18,7 @@ import com.mauriciotogneri.tensiontunnel.activities.MainActivity;
 import com.mauriciotogneri.tensiontunnel.audio.AudioManager;
 import com.mauriciotogneri.tensiontunnel.input.Input;
 import com.mauriciotogneri.tensiontunnel.objects.Background;
+import com.mauriciotogneri.tensiontunnel.objects.Box;
 import com.mauriciotogneri.tensiontunnel.objects.Player;
 import com.mauriciotogneri.tensiontunnel.objects.Wall;
 import com.mauriciotogneri.tensiontunnel.objects.enemies.rotating.EnemyRotating;
@@ -42,6 +43,7 @@ public class Game
 	private final List<Wall> walls = new ArrayList<Wall>();
 	private final List<EnemyShooting> enemiesShooting = new ArrayList<EnemyShooting>();
 	private final List<EnemyRotating> enemiesRotating = new ArrayList<EnemyRotating>();
+	private final List<Box> boxes = new ArrayList<Box>();
 
 	private final Object lockRestart = new Object();
 	private Status status = Status.INIT;
@@ -168,6 +170,7 @@ public class Game
 
 			this.player.reset();
 			this.score.clear();
+			this.boxes.clear();
 
 			this.walls.clear();
 			this.wallWidth = Game.WALL_WIDTH_INIT_VALUE;
@@ -179,7 +182,7 @@ public class Game
 
 			this.enemiesRotating.clear();
 			this.rotationSpeed = Game.ROTATION_SPEED_INIT_VALUE;
-			
+
 			this.lastWall = null;
 
 			createWall();
@@ -270,6 +273,16 @@ public class Game
 		{
 			this.wallWidth = Game.WALL_WIDTH_LIMIT;
 		}
+		
+		createBox();
+	}
+	
+	private void createBox()
+	{
+		float x = this.lastWall.getWidth() + 20;
+
+		Box box = new Box(x, this.lastWall.getCenter());
+		this.boxes.add(box);
 	}
 	
 	private void createEnemy()
@@ -396,6 +409,7 @@ public class Game
 
 		this.background.update(distance * 0.75f);
 		updateWalls(distance);
+		updateBoxes(distance);
 		updateEnemiesShooting(delta, distance);
 		updateEnemiesRotating(delta, distance);
 		updatePlayer(delta, input);
@@ -491,6 +505,21 @@ public class Game
 			createWall();
 		}
 	}
+	
+	private void updateBoxes(float distance)
+	{
+		Box[] boxList = Game.getArray(this.boxes, Box.class);
+
+		for (Box box : boxList)
+		{
+			box.update(distance);
+
+			if (box.isFinished())
+			{
+				this.boxes.remove(box);
+			}
+		}
+	}
 
 	private void updateEnemiesShooting(float delta, float distance)
 	{
@@ -567,6 +596,14 @@ public class Game
 			if (wall.insideScreen())
 			{
 				wall.draw(renderer);
+			}
+		}
+
+		for (Box box : this.boxes)
+		{
+			if (box.insideScreen())
+			{
+				box.draw(renderer);
 			}
 		}
 
