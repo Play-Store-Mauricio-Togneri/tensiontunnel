@@ -68,4 +68,9 @@ public class Player
 	{
 		return Player.SIZE;
 	}
+	
+	public static int getWidth()
+	{
+		return Player.X + Player.SIZE;
+	}
 }
