@@ -10,10 +10,10 @@ public class EnemyShootingBottom extends EnemyShooting
 	{
 		super(x - (EnemyShooting.SIZE_EXTERNAL / 2f), Background.getHeight(), timeLimit);
 	}
-	
+
 	@Override
 	protected Beam getNewBeam(float beamSpeed)
 	{
-		return new BeamUp(this.squareExternal.getX() + (this.squareExternal.getWidth() / 2f), Background.getHeight() + EnemyShooting.SIZE_EXTERNAL, beamSpeed);
+		return new BeamUp(this.sprite.getX() + (this.sprite.getWidth() / 2f), Background.getHeight() + EnemyShooting.SIZE_EXTERNAL, beamSpeed);
 	}
 }

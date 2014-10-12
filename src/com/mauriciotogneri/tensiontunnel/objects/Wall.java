@@ -3,14 +3,16 @@ package com.mauriciotogneri.tensiontunnel.objects;
 import android.graphics.Color;
 import com.mauriciotogneri.tensiontunnel.engine.Renderer;
 import com.mauriciotogneri.tensiontunnel.shapes.Rectangle;
+import com.mauriciotogneri.tensiontunnel.shapes.Sprite;
 import com.mauriciotogneri.tensiontunnel.util.GeometryUtils;
 
 public class Wall
 {
 	private boolean passed = false;
 	private final float center;
-	private final Rectangle rectangleTop;
-	private final Rectangle rectangleBottom;
+	
+	private final Sprite spriteTop;
+	private final Sprite spriteBottom;
 	
 	private static final int COLOR = Color.argb(255, 90, 110, 120);
 
@@ -19,20 +21,20 @@ public class Wall
 		this.center = center;
 		
 		float y = center + (gap / 2f);
-		this.rectangleTop = new Rectangle(x, y, wallWidth, Renderer.RESOLUTION_Y - y, Wall.COLOR);
+		this.spriteTop = new Sprite(x, y, new Rectangle(wallWidth, Renderer.RESOLUTION_Y - y, Wall.COLOR));
 		
-		this.rectangleBottom = new Rectangle(x, 0, wallWidth, center - (gap / 2f), Wall.COLOR);
+		this.spriteBottom = new Sprite(x, 0, new Rectangle(wallWidth, center - (gap / 2f), Wall.COLOR));
 	}
 
 	public void update(float distance)
 	{
-		this.rectangleTop.moveX(-distance);
-		this.rectangleBottom.moveX(-distance);
+		this.spriteTop.moveX(-distance);
+		this.spriteBottom.moveX(-distance);
 	}
 
 	public boolean isFinished()
 	{
-		return ((this.rectangleTop.getX() + this.rectangleTop.getWidth()) < 0);
+		return ((this.spriteTop.getX() + this.spriteTop.getWidth()) < 0);
 	}
 
 	public boolean isPassed()
@@ -54,7 +56,7 @@ public class Wall
 	
 	public float getWidth()
 	{
-		return this.rectangleTop.getX() + this.rectangleTop.getWidth();
+		return this.spriteTop.getX() + this.spriteTop.getWidth();
 	}
 	
 	public float getCenter()
@@ -64,17 +66,17 @@ public class Wall
 
 	public boolean collide(Player player)
 	{
-		return ((GeometryUtils.collide(this.rectangleTop, player.getShape())) || (GeometryUtils.collide(this.rectangleBottom, player.getShape())));
+		return ((GeometryUtils.collide(this.spriteTop, player.getSprite())) || (GeometryUtils.collide(this.spriteBottom, player.getSprite())));
 	}
 
 	public boolean insideScreen()
 	{
-		return this.rectangleTop.insideScreen(Renderer.RESOLUTION_X);
+		return this.spriteTop.insideScreen(Renderer.RESOLUTION_X);
 	}
 	
 	public void draw(Renderer renderer)
 	{
-		this.rectangleTop.draw(renderer);
-		this.rectangleBottom.draw(renderer);
+		this.spriteTop.draw(renderer);
+		this.spriteBottom.draw(renderer);
 	}
 }

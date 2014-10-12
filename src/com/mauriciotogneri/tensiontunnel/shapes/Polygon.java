@@ -5,20 +5,28 @@ import android.opengl.GLES20;
 
 public class Polygon extends Shape
 {
+	public Polygon(float x, float y, int color, PointF... points)
+	{
+		super(GLES20.GL_TRIANGLE_STRIP, color, x, y, Polygon.getVertices(points));
+	}
+
 	public Polygon(int color, PointF... points)
 	{
-		super(GLES20.GL_TRIANGLE_STRIP, color);
+		this(0, 0, color, points);
+	}
+
+	private static float[] getVertices(PointF... points)
+	{
+		float[] result = new float[points.length * 2];
 		
-		float[] vertices = new float[points.length * 2];
-
 		int index = 0;
-
+		
 		for (PointF point : points)
 		{
-			vertices[index++] = point.x;
-			vertices[index++] = point.y;
+			result[index++] = point.x;
+			result[index++] = point.y;
 		}
-		
-		setVertices(vertices);
+
+		return result;
 	}
 }

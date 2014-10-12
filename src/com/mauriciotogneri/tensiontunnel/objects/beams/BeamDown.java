@@ -8,10 +8,10 @@ public class BeamDown extends Beam
 	{
 		super(x, y, speed);
 	}
-	
+
 	@Override
 	public boolean isFinished()
 	{
-		return (this.rectangle.getY() < Background.getHeight());
+		return (this.sprite.getY() < Background.getHeight());
 	}
 }

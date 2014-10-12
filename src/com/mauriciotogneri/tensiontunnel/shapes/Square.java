@@ -6,4 +6,9 @@ public class Square extends Rectangle
 	{
 		super(x, y, width, width, color);
 	}
+	
+	public Square(float width, int color)
+	{
+		this(0, 0, width, color);
+	}
 }

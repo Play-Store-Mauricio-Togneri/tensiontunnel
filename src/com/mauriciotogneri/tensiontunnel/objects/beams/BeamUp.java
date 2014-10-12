@@ -9,10 +9,10 @@ public class BeamUp extends Beam
 	{
 		super(x, y, speed);
 	}
-	
+
 	@Override
 	public boolean isFinished()
 	{
-		return ((this.rectangle.getY() + this.rectangle.getHeight()) > (Renderer.RESOLUTION_Y - Background.getHeight()));
+		return ((this.sprite.getY() + this.sprite.getHeight()) > (Renderer.RESOLUTION_Y - Background.getHeight()));
 	}
 }

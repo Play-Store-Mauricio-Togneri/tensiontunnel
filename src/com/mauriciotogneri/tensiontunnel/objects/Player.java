@@ -3,12 +3,12 @@ package com.mauriciotogneri.tensiontunnel.objects;
 import android.graphics.Color;
 import com.mauriciotogneri.tensiontunnel.engine.Renderer;
 import com.mauriciotogneri.tensiontunnel.input.Input;
+import com.mauriciotogneri.tensiontunnel.shapes.Sprite;
 import com.mauriciotogneri.tensiontunnel.shapes.Square;
 
 public class Player
 {
-	private final Square squareExternal;
-	private final Square squareInternal;
+	private final Sprite sprite;
 	private float acceleration = 0;
 
 	private static final int GRAVITY = 1;
@@ -28,8 +28,10 @@ public class Player
 	
 	public Player()
 	{
-		this.squareExternal = new Square(Player.X, Renderer.RESOLUTION_Y / 2, Player.SIZE_EXTERNAL, Player.COLOR_EXTERNAL);
-		this.squareInternal = new Square(Player.X + Player.HALF_SIZE_DIFFERENCE, (Renderer.RESOLUTION_Y / 2) + Player.HALF_SIZE_DIFFERENCE, Player.SIZE_INTERNAL, Player.COLOR_INTERNAL);
+		Square squareExternal = new Square(Player.SIZE_EXTERNAL, Player.COLOR_EXTERNAL);
+		Square squareInternal = new Square(Player.HALF_SIZE_DIFFERENCE, Player.HALF_SIZE_DIFFERENCE, Player.SIZE_INTERNAL, Player.COLOR_INTERNAL);
+		
+		this.sprite = new Sprite(Player.X, Renderer.RESOLUTION_Y / 2, squareExternal, squareInternal);
 
 		reset();
 	}
@@ -54,27 +56,24 @@ public class Player
 
 		float y = delta * this.acceleration;
 
-		this.squareExternal.moveY(y);
-		this.squareInternal.moveY(y);
+		this.sprite.moveY(y);
 	}
 
 	public void draw(Renderer renderer)
 	{
-		this.squareExternal.draw(renderer);
-		this.squareInternal.draw(renderer);
+		this.sprite.draw(renderer);
 	}
 
-	public Square getShape()
+	public Sprite getSprite()
 	{
-		return this.squareExternal;
+		return this.sprite;
 	}
 
 	public void reset()
 	{
 		this.acceleration = 0;
 
-		this.squareExternal.set(Player.X, Renderer.RESOLUTION_Y / 2);
-		this.squareInternal.set(Player.X + Player.HALF_SIZE_DIFFERENCE, (Renderer.RESOLUTION_Y / 2) + Player.HALF_SIZE_DIFFERENCE);
+		this.sprite.set(Player.X, Renderer.RESOLUTION_Y / 2);
 	}
 
 	public static int getSize()
