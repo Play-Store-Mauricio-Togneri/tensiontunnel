@@ -1,13 +1,16 @@
 package com.mauriciotogneri.tensiontunnel.objects;
 
 import android.graphics.Color;
+import com.mauriciotogneri.tensiontunnel.engine.Game;
+import com.mauriciotogneri.tensiontunnel.engine.Process;
 import com.mauriciotogneri.tensiontunnel.engine.Renderer;
 import com.mauriciotogneri.tensiontunnel.shapes.Rectangle;
 import com.mauriciotogneri.tensiontunnel.shapes.Sprite;
 import com.mauriciotogneri.tensiontunnel.util.GeometryUtils;
 
-public class Wall
+public class Wall extends Process
 {
+	private final Game game;
 	private boolean passed = false;
 	private final float center;
 	
@@ -16,8 +19,9 @@ public class Wall
 	
 	private static final int COLOR = Color.argb(255, 90, 110, 120);
 
-	public Wall(float x, float center, float gap, float wallWidth)
+	public Wall(Game game, float x, float center, float gap, float wallWidth)
 	{
+		this.game = game;
 		this.center = center;
 		
 		float y = center + (gap / 2f);
@@ -26,15 +30,22 @@ public class Wall
 		this.spriteBottom = new Sprite(x, Background.getHeight(), new Rectangle(wallWidth, center - (gap / 2f) - Background.getHeight(), Wall.COLOR));
 	}
 
-	public void update(float distance)
+	@Override
+	public void update(float delta, float distance)
 	{
 		this.spriteTop.moveX(-distance);
 		this.spriteBottom.moveX(-distance);
-	}
 
-	public boolean isFinished()
-	{
-		return ((this.spriteTop.getX() + this.spriteTop.getWidth()) < 0);
+		if (isPassed())
+		{
+			this.game.wallPassed();
+		}
+		
+		if (this.spriteTop.getRight() < 0)
+		{
+			finish();
+			this.game.createWall();
+		}
 	}
 
 	public boolean isPassed()
@@ -56,7 +67,7 @@ public class Wall
 	
 	public float getWidth()
 	{
-		return this.spriteTop.getX() + this.spriteTop.getWidth();
+		return this.spriteTop.getRight();
 	}
 	
 	public float getCenter()
@@ -69,11 +80,13 @@ public class Wall
 		return ((GeometryUtils.collide(this.spriteTop, player.getSprite())) || (GeometryUtils.collide(this.spriteBottom, player.getSprite())));
 	}
 
-	public boolean insideScreen()
+	@Override
+	public boolean isVisible()
 	{
 		return this.spriteTop.insideScreen(Renderer.RESOLUTION_X);
 	}
 	
+	@Override
 	public void draw(Renderer renderer)
 	{
 		this.spriteTop.draw(renderer);

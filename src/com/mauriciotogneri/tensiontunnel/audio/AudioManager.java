@@ -19,25 +19,25 @@ public class AudioManager
 	private final Map<String, Integer> soundsMap;
 	private MediaPlayer player;
 	private int audioPosition = 0;
-	
+
 	private static AudioManager instance;
-	
+
 	public static void initialize(Context context)
 	{
 		AudioManager.instance = new AudioManager(context);
 	}
-	
-	public static synchronized AudioManager getInstance()
+
+	public static AudioManager getInstance()
 	{
 		return AudioManager.instance;
 	}
-	
+
 	private AudioManager(Context context)
 	{
 		this.context = context;
-
+		
 		this.soundsMap = new HashMap<String, Integer>();
-
+		
 		this.soundPool = new SoundPool(20, android.media.AudioManager.STREAM_MUSIC, 100);
 		this.soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener()
 		{
@@ -51,11 +51,11 @@ public class AudioManager
 			}
 		});
 	}
-	
+
 	private void loadSound(String soundPath)
 	{
 		AssetFileDescriptor assetDescriptor = null;
-		
+
 		try
 		{
 			assetDescriptor = this.context.getAssets().openFd(soundPath);
@@ -70,7 +70,7 @@ public class AudioManager
 			closeDescriptor(assetDescriptor);
 		}
 	}
-	
+
 	public void playSound(String soundPath)
 	{
 		if (this.soundsMap.containsKey(soundPath))
@@ -82,27 +82,27 @@ public class AudioManager
 			loadSound(soundPath);
 		}
 	}
-
+	
 	private void playbackSound(int resourceId)
 	{
 		this.soundPool.play(resourceId, 1f, 1f, 1, 0, 1f);
 	}
-	
+
 	public void playAudio(String audioPath)
 	{
 		stopMusic();
-		
+
 		AssetFileDescriptor assetDescriptor = null;
-		
+
 		try
 		{
 			assetDescriptor = this.context.getAssets().openFd(audioPath);
-
+			
 			this.player = new MediaPlayer();
 			this.player.setDataSource(assetDescriptor.getFileDescriptor(), assetDescriptor.getStartOffset(), assetDescriptor.getLength());
 			this.player.setLooping(true);
 			this.player.setVolume(0.5f, 0.5f);
-			
+
 			this.player.setOnPreparedListener(new OnPreparedListener()
 			{
 				@Override
@@ -111,7 +111,7 @@ public class AudioManager
 					player.start();
 				}
 			});
-			
+
 			this.player.setOnCompletionListener(new OnCompletionListener()
 			{
 				@Override
@@ -130,7 +130,7 @@ public class AudioManager
 			closeDescriptor(assetDescriptor);
 		}
 	}
-	
+
 	private void stopMusic()
 	{
 		if (this.player != null)
@@ -139,7 +139,7 @@ public class AudioManager
 			this.player.release();
 		}
 	}
-	
+
 	public void resumeAudio()
 	{
 		if ((this.player != null) && (!this.player.isPlaying()))
@@ -148,7 +148,7 @@ public class AudioManager
 			this.player.start();
 		}
 	}
-	
+
 	public void pauseAudio()
 	{
 		if (this.player != null)
@@ -157,29 +157,29 @@ public class AudioManager
 			this.audioPosition = this.player.getCurrentPosition();
 		}
 	}
-	
+
 	public void stopAudio()
 	{
 		stopMusic();
-		
+
 		if (this.soundPool != null)
 		{
 			Collection<Integer> soundsIds = this.soundsMap.values();
-
+			
 			for (Integer soundId : soundsIds)
 			{
 				this.soundPool.unload(soundId);
 			}
-			
+
 			this.soundPool.release();
 		}
 	}
-	
+
 	public boolean isAudioPlaying()
 	{
 		return ((this.player != null) && this.player.isPlaying());
 	}
-
+	
 	private void closeDescriptor(AssetFileDescriptor assetDescriptor)
 	{
 		if (assetDescriptor != null)
