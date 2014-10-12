@@ -19,20 +19,20 @@ public class Resources
 	public static class Sounds
 	{
 		private static final String ROOT = "audio/sounds/";
-
+		
 		public static final String BEAM = Sounds.ROOT + "beam.ogg";
 		public static final String EXPLOSION = Sounds.ROOT + "explosion.ogg";
 		public static final String POINT = Sounds.ROOT + "point.ogg";
 		public static final String BOX = Sounds.ROOT + "box.ogg";
 	}
-
+	
 	public static class Music
 	{
 		private static final String ROOT = "audio/music/";
-
+		
 		public static final String MUSIC = Music.ROOT + "music.ogg";
 	}
-
+	
 	public static class Sprites
 	{
 		public static Shape[] BOX;
@@ -40,7 +40,7 @@ public class Resources
 		public static Shape[] PLAYER;
 		public static Shape[] ENEMY_ROTATING;
 		public static Shape[] ENEMY_SHOOTING;
-
+		
 		private static final String ATTRIBUTE_TYPE = "type";
 		private static final String ATTRIBUTE_X = "x";
 		private static final String ATTRIBUTE_Y = "y";
@@ -48,10 +48,10 @@ public class Resources
 		private static final String ATTRIBUTE_SIZE = "size";
 		private static final String ATTRIBUTE_WIDTH = "width";
 		private static final String ATTRIBUTE_HEIGHT = "height";
-
+		
 		private static final String SHAPE_SQUARE = "SQUARE";
 		private static final String SHAPE_RECTANGLE = "RECTANGLE";
-		
+
 		public static void initialize(Context context)
 		{
 			Sprites.BOX = Sprites.loadSprite(context, R.raw.sprite_box);
@@ -60,17 +60,17 @@ public class Resources
 			Sprites.ENEMY_ROTATING = Sprites.loadSprite(context, R.raw.sprite_enemy_rotating);
 			Sprites.ENEMY_SHOOTING = Sprites.loadSprite(context, R.raw.sprite_enemy_shooting);
 		}
-
+		
 		private static Shape[] loadSprite(Context context, int resourceId)
 		{
 			Shape[] result = new Shape[0];
 			String data = Resources.readTextFile(context, resourceId);
-			
+
 			try
 			{
 				JSONArray array = new JSONArray(data);
 				result = new Shape[array.length()];
-
+				
 				for (int i = 0; i < array.length(); i++)
 				{
 					result[i] = Sprites.getShape(array.getJSONObject(i));
@@ -80,56 +80,66 @@ public class Resources
 			{
 				e.printStackTrace();
 			}
-			
+
 			return result;
 		}
-		
+
 		private static Shape getShape(JSONObject json)
 		{
 			Shape result = null;
-			
+
 			String type = json.optString(Sprites.ATTRIBUTE_TYPE);
-			
+
 			if (type.equals(Sprites.SHAPE_SQUARE))
 			{
-				float x = (float)json.optDouble(Sprites.ATTRIBUTE_X);
-				float y = (float)json.optDouble(Sprites.ATTRIBUTE_Y);
-				String color = json.optString(Sprites.ATTRIBUTE_COLOR);
-				float size = (float)json.optDouble(Sprites.ATTRIBUTE_SIZE);
-				
-				result = new Square(x, y, size, Color.parseColor(color));
+				float x = Sprites.getFloat(json, Sprites.ATTRIBUTE_X);
+				float y = Sprites.getFloat(json, Sprites.ATTRIBUTE_Y);
+				int color = Sprites.getColor(json, Sprites.ATTRIBUTE_COLOR);
+				float size = Sprites.getFloat(json, Sprites.ATTRIBUTE_SIZE);
+
+				result = new Square(x, y, size, color);
 			}
 			else if (type.equals(Sprites.SHAPE_RECTANGLE))
 			{
-				float x = (float)json.optDouble(Sprites.ATTRIBUTE_X);
-				float y = (float)json.optDouble(Sprites.ATTRIBUTE_Y);
-				String color = json.optString(Sprites.ATTRIBUTE_COLOR);
-				float width = (float)json.optDouble(Sprites.ATTRIBUTE_WIDTH);
-				float height = (float)json.optDouble(Sprites.ATTRIBUTE_HEIGHT);
-				
-				result = new Rectangle(x, y, width, height, Color.parseColor(color));
+				float x = Sprites.getFloat(json, Sprites.ATTRIBUTE_X);
+				float y = Sprites.getFloat(json, Sprites.ATTRIBUTE_Y);
+				int color = Sprites.getColor(json, Sprites.ATTRIBUTE_COLOR);
+				float width = Sprites.getFloat(json, Sprites.ATTRIBUTE_WIDTH);
+				float height = Sprites.getFloat(json, Sprites.ATTRIBUTE_HEIGHT);
+
+				result = new Rectangle(x, y, width, height, color);
 			}
-			
+
 			return result;
 		}
-	}
 
+		private static float getFloat(JSONObject json, String key)
+		{
+			return (float)json.optDouble(key);
+		}
+
+		private static int getColor(JSONObject json, String key)
+		{
+			return Color.parseColor(json.optString(key));
+		}
+	}
+	
 	public static String readTextFile(Context context, int resourceId)
 	{
 		StringBuilder builder = new StringBuilder();
-
+		
 		InputStream inputStream = null;
 		InputStreamReader inputStreamReader = null;
 		BufferedReader bufferedReader = null;
-
+		
 		try
 		{
 			inputStream = context.getResources().openRawResource(resourceId);
 			inputStreamReader = new InputStreamReader(inputStream);
 			bufferedReader = new BufferedReader(inputStreamReader);
-
+			
 			String nextLine;
-
+			
 			while ((nextLine = bufferedReader.readLine()) != null)
 			{
 				builder.append(nextLine);
@@ -146,10 +156,10 @@ public class Resources
 			Resources.closeResource(inputStreamReader);
 			Resources.closeResource(bufferedReader);
 		}
-
+		
 		return builder.toString();
 	}
-
+	
 	private static void closeResource(Closeable resource)
 	{
 		if (resource != null)
