@@ -512,7 +512,7 @@ public class Game
 	{
 		for (Process process : list)
 		{
-			if (process.getClass().equals(Box.class))
+			if (process instanceof Box)
 			{
 				Box box = (Box)process;
 
@@ -530,7 +530,21 @@ public class Game
 					}
 					
 					this.powerUpTimer = 0;
+					removeAllBoxes(list);
+					break;
 				}
+			}
+		}
+	}
+	
+	private void removeAllBoxes(Process[] list)
+	{
+		for (Process process : list)
+		{
+			if (process instanceof Box)
+			{
+				Box box = (Box)process;
+				box.finish();
 			}
 		}
 	}
