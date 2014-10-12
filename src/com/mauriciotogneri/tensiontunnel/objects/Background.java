@@ -21,7 +21,7 @@ public class Background
 	private final Sprite wallBottom1;
 	private final Sprite wallBottom2;
 
-	private static final int SHAPE_WIDTH = 120;
+	private static final int SHAPE_WIDTH = 100;
 	private static final int WALL_HEIGHT = 7;
 	private static final int NUMBER_OF_SHAPES = 2;
 	
@@ -51,14 +51,14 @@ public class Background
 	{
 		this.wallTop1.moveX(-distance);
 		
-		if ((this.wallTop1.getX() + this.wallTop1.getWidth()) < 0)
+		if ((this.wallTop1.getRight()) < 0)
 		{
 			this.wallTop1.moveX(Renderer.RESOLUTION_X * 2);
 		}
 		
 		this.wallTop2.moveX(-distance);
 
-		if ((this.wallTop2.getX() + this.wallTop2.getWidth()) < 0)
+		if ((this.wallTop2.getRight()) < 0)
 		{
 			this.wallTop2.moveX(Renderer.RESOLUTION_X * 2);
 		}
@@ -67,38 +67,34 @@ public class Background
 
 		this.wallBottom1.moveX(-distance);
 		
-		if ((this.wallBottom1.getX() + this.wallBottom1.getWidth()) < 0)
+		if ((this.wallBottom1.getRight()) < 0)
 		{
 			this.wallBottom1.moveX(Renderer.RESOLUTION_X * 2);
 		}
 		
 		this.wallBottom2.moveX(-distance);
 
-		if ((this.wallBottom2.getX() + this.wallBottom2.getWidth()) < 0)
+		if ((this.wallBottom2.getRight()) < 0)
 		{
 			this.wallBottom2.moveX(Renderer.RESOLUTION_X * 2);
 		}
 
 		// =========================================================
 		
-		float backgroundSpeed = distance * Background.RELATIVE_SPEED;
+		float farBackgroundSpeed = distance * Background.RELATIVE_SPEED;
 		
-		if ((this.triangle1.getX() + this.triangle1.getWidth()) < 0)
+		this.triangle1.moveX(-farBackgroundSpeed);
+
+		if ((this.triangle1.getRight()) < 0)
 		{
 			this.triangle1.moveX(Background.NUMBER_OF_SHAPES * Background.SHAPE_WIDTH);
 		}
-		else
-		{
-			this.triangle1.moveX(-backgroundSpeed);
-		}
 
-		if ((this.triangle2.getX() + this.triangle2.getWidth()) < 0)
+		this.triangle2.moveX(-farBackgroundSpeed);
+
+		if ((this.triangle2.getRight()) < 0)
 		{
 			this.triangle2.moveX(Background.NUMBER_OF_SHAPES * Background.SHAPE_WIDTH);
-		}
-		else
-		{
-			this.triangle2.moveX(-backgroundSpeed);
 		}
 	}
 
@@ -141,10 +137,10 @@ public class Background
 		this.triangle1 = new Sprite(0, 0, new Polygon(Background.COLOR_SHAPE, points1));
 
 		PointF[] points2 = new PointF[3];
-		points2[0] = new PointF(Background.SHAPE_WIDTH, 0);
-		points2[1] = new PointF(Background.SHAPE_WIDTH * (3f / 2f), height);
-		points2[2] = new PointF(Background.SHAPE_WIDTH * 2, 0);
-		this.triangle2 = new Sprite(0, 0, new Polygon(Background.COLOR_SHAPE, points2));
+		points2[0] = new PointF(0, 0);
+		points2[1] = new PointF(Background.SHAPE_WIDTH / 2f, height);
+		points2[2] = new PointF(Background.SHAPE_WIDTH, 0);
+		this.triangle2 = new Sprite(Background.SHAPE_WIDTH, 0, new Polygon(Background.COLOR_SHAPE, points2));
 	}
 
 	public static int getHeight()
