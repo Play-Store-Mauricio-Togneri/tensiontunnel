@@ -50,6 +50,9 @@ public class Game
 
 	private final LinearLayout blockScreen;
 
+	private float powerUpTimer = 0;
+	private PowerUp currentPowerUp = null;
+
 	private Wall lastWall = null;
 
 	private int wallWidth = 0;
@@ -70,6 +73,8 @@ public class Game
 	private Sprite inputDebugAdvance;
 
 	private static Game INSTANCE = null;
+
+	private static final int POWER_UP_TIME_LIMIT = 5;
 
 	private static final int WALL_WIDTH_INIT_VALUE = 10;
 	private static final int WALL_WIDTH_INCREMENT = 1;
@@ -97,6 +102,11 @@ public class Game
 	private enum Status
 	{
 		INIT, RUNNING, COLLIDE
+	}
+	
+	private enum PowerUp
+	{
+		INVULNERABILITY, SLOW_TIME, FAST_SPEED, HEAVY_GRAVITY;
 	}
 
 	// TODO:
@@ -196,6 +206,9 @@ public class Game
 			this.beamFrequency = Game.BEAM_FREQUENCY_INIT_VALUE;
 
 			this.rotationSpeed = Game.ROTATION_SPEED_INIT_VALUE;
+
+			this.currentPowerUp = null;
+			this.powerUpTimer = 0;
 
 			this.lastWall = null;
 
@@ -304,10 +317,13 @@ public class Game
 
 	private void createBox()
 	{
-		float x = this.lastWall.getWidth() + 20;
+		if (this.currentPowerUp == null)
+		{
+			float x = this.lastWall.getWidth() + 20;
 
-		Box box = new Box(x, this.lastWall.getCenter());
-		box.start();
+			Box box = new Box(x, this.lastWall.getCenter());
+			box.start();
+		}
 	}
 
 	public void createEnemy()
@@ -439,7 +455,19 @@ public class Game
 		updateProcesses(list, delta, distance);
 
 		updatePlayer(delta, input);
+		
+		this.powerUpTimer += delta;
 
+		if ((this.currentPowerUp != null) && (this.powerUpTimer > Game.POWER_UP_TIME_LIMIT))
+		{
+			if (this.currentPowerUp == PowerUp.INVULNERABILITY)
+			{
+				this.player.setInvulnerable(false);
+			}
+
+			this.currentPowerUp = null;
+		}
+		
 		checkCollision(list, input);
 	}
 
@@ -492,7 +520,16 @@ public class Game
 				{
 					box.finish();
 					AudioManager.getInstance().playSound(Resources.Sounds.BOX);
-					// TODO: power-up
+
+					this.currentPowerUp = PowerUp.INVULNERABILITY; // PowerUp.values()[random(0,
+																	// PowerUp.values().length)];
+					
+					if (this.currentPowerUp == PowerUp.INVULNERABILITY)
+					{
+						this.player.setInvulnerable(true);
+					}
+					
+					this.powerUpTimer = 0;
 				}
 			}
 		}
@@ -513,31 +550,34 @@ public class Game
 					result = true;
 				}
 			}
-			else if (process instanceof EnemyShooting)
+			else if (this.currentPowerUp != PowerUp.INVULNERABILITY)
 			{
-				EnemyShooting enemy = (EnemyShooting)process;
-
-				if (enemy.collide(this.player))
+				if (process instanceof EnemyShooting)
 				{
-					result = true;
+					EnemyShooting enemy = (EnemyShooting)process;
+					
+					if (enemy.collide(this.player))
+					{
+						result = true;
+					}
 				}
-			}
-			else if (process instanceof EnemyRotating)
-			{
-				EnemyRotating enemy = (EnemyRotating)process;
-
-				if (enemy.collide(this.player))
+				else if (process instanceof EnemyRotating)
 				{
-					result = true;
+					EnemyRotating enemy = (EnemyRotating)process;
+					
+					if (enemy.collide(this.player))
+					{
+						result = true;
+					}
 				}
-			}
-			else if (process instanceof Beam)
-			{
-				Beam beam = (Beam)process;
-
-				if (beam.collide(this.player))
+				else if (process instanceof Beam)
 				{
-					result = true;
+					Beam beam = (Beam)process;
+					
+					if (beam.collide(this.player))
+					{
+						result = true;
+					}
 				}
 			}
 		}
