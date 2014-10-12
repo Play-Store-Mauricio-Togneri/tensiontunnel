@@ -31,13 +31,13 @@ public abstract class EnemyShooting extends Process
 	}
 	
 	@Override
-	public void update(float delta, float distance)
+	public void update(float delta, float distance, float gameSpeed)
 	{
 		this.sprite.moveX(-distance);
 
 		if (this.sprite.getX() < (Renderer.RESOLUTION_X * 1.5f))
 		{
-			this.timeCounter += delta;
+			this.timeCounter += (delta * gameSpeed);
 
 			if (this.timeCounter > this.beamFrequency)
 			{
@@ -55,7 +55,6 @@ public abstract class EnemyShooting extends Process
 
 		if (this.sprite.getRight() < 0)
 		{
-			// this.beams.clear();
 			finish();
 			this.game.createEnemy();
 		}

@@ -39,6 +39,7 @@ public class Resources
 		public static Shape[] BEAM;
 		public static Shape[] PLAYER_NORMAL;
 		public static Shape[] PLAYER_HEAVY;
+		public static Shape[] SHIELD;
 		public static Shape[] THRUST;
 		public static Shape[] ENEMY_ROTATING;
 		public static Shape[] ENEMY_SHOOTING;
@@ -68,6 +69,7 @@ public class Resources
 				Sprites.BEAM = Sprites.loadSprite(context, R.raw.sprite_beam, resolutionX, resolutionY);
 				Sprites.PLAYER_NORMAL = Sprites.loadSprite(context, R.raw.sprite_player_normal, resolutionX, resolutionY);
 				Sprites.PLAYER_HEAVY = Sprites.loadSprite(context, R.raw.sprite_player_heavy, resolutionX, resolutionY);
+				Sprites.SHIELD = Sprites.loadSprite(context, R.raw.sprite_shield, resolutionX, resolutionY);
 				Sprites.ENEMY_ROTATING = Sprites.loadSprite(context, R.raw.sprite_enemy_rotating, resolutionX, resolutionY);
 				Sprites.ENEMY_SHOOTING = Sprites.loadSprite(context, R.raw.sprite_enemy_shooting, resolutionX, resolutionY);
 				Sprites.BACKGROUND = Sprites.loadSprite(context, R.raw.sprite_background, resolutionX, resolutionY);

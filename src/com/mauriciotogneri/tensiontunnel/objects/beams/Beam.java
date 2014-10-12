@@ -21,10 +21,10 @@ public abstract class Beam extends Process
 	}
 
 	@Override
-	public void update(float delta, float distance)
+	public void update(float delta, float distance, float gameSpeed)
 	{
 		this.sprite.moveX(-distance);
-		this.sprite.moveY(delta * this.speed);
+		this.sprite.moveY(delta * this.speed * gameSpeed);
 
 		if (isFinished())
 		{

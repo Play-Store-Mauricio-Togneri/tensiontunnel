@@ -37,11 +37,11 @@ public class EnemyRotating extends Process
 	}
 	
 	@Override
-	public void update(float delta, float distance)
+	public void update(float delta, float distance, float gameSpeed)
 	{
 		this.x -= distance;
 
-		this.angle += (delta * this.rotationSpeed);
+		this.angle += (delta * this.rotationSpeed * gameSpeed);
 		this.angle = (this.angle % 360);
 
 		float newX1 = ((float)Math.cos(this.angle) * this.radius) + this.x;
