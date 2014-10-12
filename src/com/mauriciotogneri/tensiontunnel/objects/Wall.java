@@ -21,9 +21,9 @@ public class Wall
 		this.center = center;
 		
 		float y = center + (gap / 2f);
-		this.spriteTop = new Sprite(x, y, new Rectangle(wallWidth, Renderer.RESOLUTION_Y - y, Wall.COLOR));
+		this.spriteTop = new Sprite(x, y, new Rectangle(wallWidth, Renderer.RESOLUTION_Y - y - Background.getHeight(), Wall.COLOR));
 		
-		this.spriteBottom = new Sprite(x, 0, new Rectangle(wallWidth, center - (gap / 2f), Wall.COLOR));
+		this.spriteBottom = new Sprite(x, Background.getHeight(), new Rectangle(wallWidth, center - (gap / 2f) - Background.getHeight(), Wall.COLOR));
 	}
 
 	public void update(float distance)
