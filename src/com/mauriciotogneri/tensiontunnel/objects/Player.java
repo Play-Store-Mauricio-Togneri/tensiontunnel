@@ -1,10 +1,9 @@
 package com.mauriciotogneri.tensiontunnel.objects;
 
-import android.graphics.Color;
 import com.mauriciotogneri.tensiontunnel.engine.Renderer;
 import com.mauriciotogneri.tensiontunnel.input.Input;
 import com.mauriciotogneri.tensiontunnel.shapes.Sprite;
-import com.mauriciotogneri.tensiontunnel.shapes.Square;
+import com.mauriciotogneri.tensiontunnel.util.Resources;
 
 public class Player
 {
@@ -19,19 +18,11 @@ public class Player
 
 	private static final int X = 30;
 	
-	private static final int COLOR_EXTERNAL = Color.argb(255, 210, 65, 50);
-	private static final int COLOR_INTERNAL = Color.argb(255, 220, 75, 60);
-	
 	private static final int SIZE_EXTERNAL = 3;
-	private static final int SIZE_INTERNAL = 2;
-	private static final float HALF_SIZE_DIFFERENCE = (Player.SIZE_EXTERNAL - Player.SIZE_INTERNAL) / 2f;
 	
 	public Player()
 	{
-		Square squareExternal = new Square(Player.SIZE_EXTERNAL, Player.COLOR_EXTERNAL);
-		Square squareInternal = new Square(Player.HALF_SIZE_DIFFERENCE, Player.HALF_SIZE_DIFFERENCE, Player.SIZE_INTERNAL, Player.COLOR_INTERNAL);
-		
-		this.sprite = new Sprite(Player.X, Renderer.RESOLUTION_Y / 2, squareExternal, squareInternal);
+		this.sprite = new Sprite(Player.X, Renderer.RESOLUTION_Y / 2, Resources.Sprites.PLAYER);
 
 		reset();
 	}

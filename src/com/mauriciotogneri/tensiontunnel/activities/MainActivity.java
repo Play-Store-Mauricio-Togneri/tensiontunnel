@@ -21,6 +21,7 @@ import com.mauriciotogneri.tensiontunnel.R;
 import com.mauriciotogneri.tensiontunnel.engine.Game;
 import com.mauriciotogneri.tensiontunnel.engine.Renderer;
 import com.mauriciotogneri.tensiontunnel.statistics.Statistics;
+import com.mauriciotogneri.tensiontunnel.util.Resources;
 
 @SuppressLint("ClickableViewAccessibility")
 public class MainActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
@@ -46,6 +47,8 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 		
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
+		Resources.Sprites.initialize(this);
+		
 		Window window = getWindow();
 		window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		
