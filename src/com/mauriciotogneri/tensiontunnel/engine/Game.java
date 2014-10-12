@@ -274,7 +274,7 @@ public class Game
 
 		if (this.lastWall != null)
 		{
-			x += this.lastWall.getWidth();
+			x += this.lastWall.getRight();
 		}
 
 		int deviationLimit = (Renderer.RESOLUTION_Y / 2) - (this.wallGap / 2) - Background.getHeight() + 1;
@@ -308,7 +308,7 @@ public class Game
 	{
 		if (this.currentPowerUp == null)
 		{
-			float x = this.lastWall.getWidth() + 20;
+			float x = this.lastWall.getRight() + 20;
 
 			Box box = new Box(x, this.lastWall.getCenter());
 			box.start();
@@ -327,7 +327,7 @@ public class Game
 
 		if (this.lastWall != null)
 		{
-			x += this.lastWall.getWidth();
+			x += this.lastWall.getRight();
 		}
 
 		EnemyShooting enemy = null;
@@ -367,7 +367,7 @@ public class Game
 
 		if (this.lastWall != null)
 		{
-			x += this.lastWall.getWidth();
+			x += this.lastWall.getRight();
 		}
 
 		EnemyRotating enemy = null;
@@ -440,6 +440,10 @@ public class Game
 			{
 				this.player.setInvulnerable(false);
 			}
+			else if (this.currentPowerUp == PowerUp.HEAVY_GRAVITY)
+			{
+				this.player.setHeavier(false);
+			}
 
 			this.currentPowerUp = null;
 		}
@@ -497,12 +501,16 @@ public class Game
 					box.finish();
 					AudioManager.getInstance().playSound(Resources.Sounds.BOX);
 
-					this.currentPowerUp = PowerUp.FAST_SPEED; // PowerUp.values()[random(0,
-																// PowerUp.values().length)];
+					this.currentPowerUp = PowerUp.HEAVY_GRAVITY; // PowerUp.values()[random(0,
+																	// PowerUp.values().length)];
 					
 					if (this.currentPowerUp == PowerUp.INVULNERABILITY)
 					{
 						this.player.setInvulnerable(true);
+					}
+					else if (this.currentPowerUp == PowerUp.HEAVY_GRAVITY)
+					{
+						this.player.setHeavier(true);
 					}
 					
 					this.powerUpTimer = 0;

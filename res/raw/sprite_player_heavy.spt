@@ -1,0 +1,16 @@
+[
+    {
+        "x": 0,
+        "y": 0,
+        "color": "#D24132",
+        "type": "SQUARE",
+        "size": 4.5
+    },
+    {
+        "x": 0.75,
+        "y": 0.75,
+        "color": "#DC4B3C",
+        "type": "SQUARE",
+        "size": 3
+    }
+]
