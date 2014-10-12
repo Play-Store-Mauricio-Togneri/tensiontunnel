@@ -1,6 +1,7 @@
 package com.mauriciotogneri.tensiontunnel.objects;
 
 import android.graphics.Color;
+import com.mauriciotogneri.tensiontunnel.engine.Process;
 import com.mauriciotogneri.tensiontunnel.engine.Renderer;
 import com.mauriciotogneri.tensiontunnel.input.Input;
 import com.mauriciotogneri.tensiontunnel.shapes.Sprite;
@@ -33,11 +34,17 @@ public class Player
 		reset();
 	}
 	
-	public void update(float delta, Input input)
+	public void update(float delta, Input input, boolean fast)
 	{
 		if (input.jumpPressed)
 		{
 			this.acceleration += Player.JUMP_FORCE;
+		}
+		
+		if (fast)
+		{
+			Thrust thrust = new Thrust(Player.X, this.sprite.getY());
+			thrust.start();
 		}
 		
 		this.acceleration -= Player.GRAVITY;
@@ -94,5 +101,41 @@ public class Player
 	public static int getWidth()
 	{
 		return Player.X + Player.SIZE_EXTERNAL;
+	}
+
+	private class Thrust extends Process
+	{
+		private float factor = 1f;
+		private final Sprite sprite1;
+		
+		public Thrust(float x, float y)
+		{
+			this.sprite1 = new Sprite(x, y, Resources.Sprites.THRUST);
+		}
+
+		@Override
+		public void update(float delta, float distance)
+		{
+			this.factor -= (delta * 2);
+			
+			if (this.factor <= 0)
+			{
+				finish();
+			}
+
+			this.sprite1.moveX(-distance);
+		}
+		
+		@Override
+		public boolean isVisible()
+		{
+			return true;
+		}
+		
+		@Override
+		public void draw(Renderer renderer)
+		{
+			this.sprite1.draw(renderer, this.factor, this.factor, this.factor);
+		}
 	}
 }

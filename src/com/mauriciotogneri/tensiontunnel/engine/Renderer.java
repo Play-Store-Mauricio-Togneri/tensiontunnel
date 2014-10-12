@@ -107,10 +107,11 @@ public class Renderer implements android.opengl.GLSurfaceView.Renderer
 		this.timer.stop();
 	}
 	
-	public void drawShape(FloatBuffer vertexData, float x, float y, int color, float alpha, int mode, int length)
+	public void drawShape(FloatBuffer vertexData, float x, float y, int color, float alpha, float scaleX, float scaleY, int mode, int length)
 	{
 		Matrix.setIdentityM(this.modelMatrix, 0);
 		Matrix.translateM(this.modelMatrix, 0, x, y, 0);
+		Matrix.scaleM(this.modelMatrix, 0, scaleX, scaleY, 1f);
 
 		Matrix.multiplyMM(this.finalMatrix, 0, this.projectionMatrix, 0, this.modelMatrix, 0);
 		GLES20.glUniformMatrix4fv(this.matrixLocation, 1, false, this.finalMatrix, 0);
