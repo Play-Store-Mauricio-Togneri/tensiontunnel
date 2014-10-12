@@ -44,7 +44,7 @@ public class Background
 		this.wallBottom1 = new Sprite(0, 0, new Rectangle(width, Background.WALL_HEIGHT, Background.COLOR_WALL));
 		this.wallBottom2 = new Sprite(width, 0, new Rectangle(width, Background.WALL_HEIGHT, Background.COLOR_WALL));
 
-		createShapes(height);
+		createTriangles(height);
 	}
 
 	public void update(float distance)
@@ -132,7 +132,7 @@ public class Background
 		this.wallBottom2.draw(renderer);
 	}
 	
-	private void createShapes(float height)
+	private void createTriangles(float height)
 	{
 		PointF[] points1 = new PointF[3];
 		points1[0] = new PointF(0, 0);
