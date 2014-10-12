@@ -9,24 +9,19 @@ public class Polygon extends Shape
 	{
 		super(GLES20.GL_TRIANGLE_STRIP, color, x, y, Polygon.getVertices(points));
 	}
-
-	public Polygon(int color, PointF... points)
-	{
-		this(0, 0, color, points);
-	}
-
+	
 	private static float[] getVertices(PointF... points)
 	{
 		float[] result = new float[points.length * 2];
-		
+
 		int index = 0;
-		
+
 		for (PointF point : points)
 		{
 			result[index++] = point.x;
 			result[index++] = point.y;
 		}
-
+		
 		return result;
 	}
 }
