@@ -115,7 +115,7 @@ public class Player
 		this.shield.set(Player.X - 1f, (Renderer.RESOLUTION_Y / 2) - 1f);
 	}
 
-	public static int getSize()
+	public static int getMaxSize()
 	{
 		return Player.MAX_SIZE;
 	}

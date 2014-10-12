@@ -77,18 +77,18 @@ public class Game
 	
 	private static final int WALL_GAP_INIT_RATIO = 3;
 	private static final int WALL_GAP_DECREMENT = 1;
-	private static final int WALL_GAP_LIMIT = Player.getSize() * 2;
+	private static final int WALL_GAP_LIMIT = Player.getMaxSize() * 2;
 	
-	private static final int BEAM_SPEED_INIT_VALUE = 40;
-	private static final float BEAM_SPEED_INCREMENT = 0.2f;
+	private static final int BEAM_SPEED_INIT_VALUE = 30;
+	private static final float BEAM_SPEED_INCREMENT = 0.25f;
 	private static final int BEAM_SPEED_LIMIT = 50;
 	
-	private static final float BEAM_FREQUENCY_INIT_VALUE = 0.75f;
-	private static final float BEAM_FREQUENCY_DECREMENT = 0.01f;
+	private static final float BEAM_FREQUENCY_INIT_VALUE = 1f;
+	private static final float BEAM_FREQUENCY_DECREMENT = 0.02f;
 	private static final float BEAM_FREQUENCY_LIMIT = 0.3f;
 	
-	private static final int ROTATION_SPEED_INIT_VALUE = 2;
-	private static final float ROTATION_SPEED_INCREMENT = 0.1f;
+	private static final int ROTATION_SPEED_INIT_VALUE = 1;
+	private static final float ROTATION_SPEED_INCREMENT = 0.15f;
 	private static final int ROTATION_SPEED_LIMIT = 4;
 	
 	private static final int BASE_SPEED = 20;
@@ -311,7 +311,7 @@ public class Game
 	{
 		if (this.currentPowerUp == null)
 		{
-			float x = this.lastWall.getRight() + 20;
+			float x = this.lastWall.getRight() + 10;
 			
 			Box box = new Box(x, this.lastWall.getCenter());
 			box.start();
