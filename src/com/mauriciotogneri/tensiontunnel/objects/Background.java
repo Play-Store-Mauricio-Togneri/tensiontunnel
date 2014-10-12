@@ -4,7 +4,6 @@ import android.graphics.Color;
 import android.graphics.PointF;
 import com.mauriciotogneri.tensiontunnel.engine.Renderer;
 import com.mauriciotogneri.tensiontunnel.shapes.Polygon;
-import com.mauriciotogneri.tensiontunnel.shapes.Rectangle;
 import com.mauriciotogneri.tensiontunnel.shapes.Sprite;
 import com.mauriciotogneri.tensiontunnel.util.GeometryUtils;
 import com.mauriciotogneri.tensiontunnel.util.Resources;
@@ -26,7 +25,6 @@ public class Background
 	private static final int GROUND_HEIGHT = 7;
 	private static final int NUMBER_OF_SHAPES = 2;
 
-	private static final int COLOR_BASE = Color.argb(255, 170, 160, 210);
 	private static final int COLOR_SHAPE = Color.argb(255, 165, 155, 205);
 
 	private static final float RELATIVE_SPEED = 0.75f;
@@ -36,7 +34,7 @@ public class Background
 		float width = Renderer.RESOLUTION_X;
 		float height = Renderer.RESOLUTION_Y;
 		
-		this.base = new Sprite(0, 0, new Rectangle(width, height, Background.COLOR_BASE));
+		this.base = new Sprite(0, 0, Resources.Sprites.BACKGROUND);
 
 		this.groundTop1 = new Sprite(0, height - Background.GROUND_HEIGHT, Resources.Sprites.BACKGROUND_GROUND);
 		this.groundTop2 = new Sprite(width, height - Background.GROUND_HEIGHT, Resources.Sprites.BACKGROUND_GROUND);
