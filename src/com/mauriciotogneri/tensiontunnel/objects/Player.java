@@ -17,7 +17,7 @@ public class Player
 	private float acceleration = 0;
 	
 	private static final int GRAVITY = 1;
-	private static final float EXTRA_GRAVITY = 0.3f;
+	private static final float EXTRA_GRAVITY = 0.15f;
 	private static final int JUMP_FORCE = 3;
 	
 	private static final int MAX_ACCELERATION_UP = 30;
