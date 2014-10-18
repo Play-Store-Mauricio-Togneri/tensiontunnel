@@ -65,6 +65,8 @@ public class Game
 	private boolean enemyRotatingOpposite = true;
 	
 	private static Game INSTANCE = null;
+	
+	private static final String ATTRIBUTE_BEST = "BEST";
 
 	private static final int POWER_UP_TIME_LIMIT = 5;
 	
@@ -249,7 +251,7 @@ public class Game
 	private void activateBlockScreen()
 	{
 		SharedPreferences preferences = this.mainActivity.getPreferences(Context.MODE_PRIVATE);
-		int bestScore = preferences.getInt("BEST", 0);
+		int bestScore = preferences.getInt(Game.ATTRIBUTE_BEST, 0);
 		int currentScore = this.score.getValue();
 
 		if (currentScore > bestScore)
@@ -257,11 +259,11 @@ public class Game
 			bestScore = currentScore;
 
 			SharedPreferences.Editor editor = preferences.edit();
-			editor.putInt("BEST", bestScore);
+			editor.putInt(Game.ATTRIBUTE_BEST, bestScore);
 			editor.commit();
 		}
 
-		this.mainActivity.submitScore(currentScore);
+		this.mainActivity.submitScore(bestScore);
 
 		TextView scoreView = (TextView)this.blockScreen.findViewById(R.id.score);
 		scoreView.setText(String.valueOf(currentScore));
