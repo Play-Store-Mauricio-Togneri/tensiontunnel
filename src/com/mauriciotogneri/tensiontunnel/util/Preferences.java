@@ -8,14 +8,14 @@ public class Preferences
 	private static final String PREFERENCES = "PREFERENCES";
 	private static final String ATTRIBUTE_CONNECTED = "CONNECTED";
 	private static final String ATTRIBUTE_BEST = "BEST";
-
+	
 	private static Context context;
 
 	public static void initialize(Context context)
 	{
 		Preferences.context = context;
 	}
-
+	
 	public static void setConnectedPlayGameServices()
 	{
 		SharedPreferences.Editor editor = Preferences.context.getSharedPreferences(Preferences.PREFERENCES, Context.MODE_PRIVATE).edit();
