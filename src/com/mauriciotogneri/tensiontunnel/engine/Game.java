@@ -54,7 +54,7 @@ public class Game
 	private Wall lastWall = null;
 
 	private float wallWidth;
-	private int wallGap;
+	private float wallGap;
 	
 	private float beamSpeed;
 	private float beamFrequency;
@@ -74,11 +74,11 @@ public class Game
 	
 	private static final int WALL_WIDTH_INIT_VALUE = 10;
 	private static final float WALL_WIDTH_INCREMENT = 0.5f;
-	private static final int WALL_WIDTH_LIMIT = 20;
+	private static final int WALL_WIDTH_LIMIT = 30;
 	
 	private static final int WALL_GAP_INIT_RATIO = 3;
-	private static final float WALL_GAP_DECREMENT = 0.5f;
-	private static final int WALL_GAP_LIMIT = Player.getMaxSize() * 2;
+	private static final float WALL_GAP_DECREMENT = 0.1f;
+	private static final float WALL_GAP_LIMIT = Player.getMaxSize() * 2.5f;
 	
 	private static final int BEAM_SPEED_INIT_VALUE = 20;
 	private static final float BEAM_SPEED_INCREMENT = 0.1f;
@@ -118,13 +118,11 @@ public class Game
 	}
 	
 	// TODO:
-	// change gap and length of the walls
-	// collect statistics how people die
+	// new enemies
+	// change color thrust when taking fast box
 	// stamina bar
 	// extra life
 	// box file
-	// new enemies
-	// change color thrust when taking fast box
 	public Game(MainActivity mainActivity, LinearLayout blockScreen)
 	{
 		Game.INSTANCE = this;
@@ -295,7 +293,7 @@ public class Game
 			x += this.lastWall.getRight();
 		}
 		
-		int deviationLimit = (Renderer.RESOLUTION_Y / 2) - (this.wallGap / 2) - Background.getHeight() + 1;
+		int deviationLimit = (Renderer.RESOLUTION_Y / 2) - ((int)(this.wallGap / 2)) - Background.getHeight() + 1;
 		int centerDeviation = random(0, deviationLimit);
 		int center = random((Renderer.RESOLUTION_Y / 2) - centerDeviation, (Renderer.RESOLUTION_Y / 2) + centerDeviation);
 		
