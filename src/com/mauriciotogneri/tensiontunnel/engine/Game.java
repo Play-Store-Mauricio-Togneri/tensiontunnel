@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Vibrator;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,6 +26,7 @@ import com.mauriciotogneri.tensiontunnel.objects.enemies.shooting.EnemyShootingB
 import com.mauriciotogneri.tensiontunnel.objects.enemies.shooting.EnemyShootingTop;
 import com.mauriciotogneri.tensiontunnel.objects.score.Score;
 import com.mauriciotogneri.tensiontunnel.statistics.Statistics;
+import com.mauriciotogneri.tensiontunnel.util.Preferences;
 import com.mauriciotogneri.tensiontunnel.util.Resources;
 
 public class Game
@@ -66,8 +66,6 @@ public class Game
 	
 	private static Game INSTANCE = null;
 	
-	private static final String ATTRIBUTE_BEST = "BEST";
-
 	private static final int POWER_UP_TIME_LIMIT = 5;
 	
 	private static final float GAME_SPEED_NORMAL = 1;
@@ -120,10 +118,6 @@ public class Game
 
 	// TODO:
 	// change gap and length of the walls
-	// connect on start?
-	// reset the leaderboard
-	// https://developers.google.com/games/services/management/api/scores/resetForAllPlayers
-	// pause game when receiving a call
 	// collect statistics how people die
 	// stamina bar
 	// extra life
@@ -250,17 +244,14 @@ public class Game
 
 	private void activateBlockScreen()
 	{
-		SharedPreferences preferences = this.mainActivity.getPreferences(Context.MODE_PRIVATE);
-		int bestScore = preferences.getInt(Game.ATTRIBUTE_BEST, 0);
+		int bestScore = Preferences.getBestScore();
 		int currentScore = this.score.getValue();
 
 		if (currentScore > bestScore)
 		{
 			bestScore = currentScore;
 
-			SharedPreferences.Editor editor = preferences.edit();
-			editor.putInt(Game.ATTRIBUTE_BEST, bestScore);
-			editor.commit();
+			Preferences.setBestScore(bestScore);
 		}
 
 		this.mainActivity.submitScore(bestScore);

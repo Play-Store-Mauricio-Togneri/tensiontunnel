@@ -21,6 +21,7 @@ import com.mauriciotogneri.tensiontunnel.R;
 import com.mauriciotogneri.tensiontunnel.engine.Game;
 import com.mauriciotogneri.tensiontunnel.engine.Renderer;
 import com.mauriciotogneri.tensiontunnel.statistics.Statistics;
+import com.mauriciotogneri.tensiontunnel.util.Preferences;
 
 @SuppressLint("ClickableViewAccessibility")
 public class MainActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
@@ -76,18 +77,28 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
 		setContentView(layout);
 
+		Preferences.initialize(this);
 		Statistics.sendHitAppLaunched();
 
 		GoogleApiClient.Builder builder = new GoogleApiClient.Builder(this, this, this);
 		builder.addApi(Games.API).addScope(Games.SCOPE_GAMES);
 		this.apiClient = builder.build();
+		
+		if (Preferences.isConnectedPlayGameServices())
+		{
+			this.apiClient.connect();
+		}
 	}
 
 	@Override
 	public void onConnected(Bundle connectionHint)
 	{
+		Preferences.setConnectedPlayGameServices();
+
 		if (this.openingLeaderboard)
 		{
+			submitScore(Preferences.getBestScore());
+
 			showRanking();
 		}
 	}
