@@ -14,7 +14,7 @@ public class Alarm
 		this.time = time;
 		this.total = 0;
 	}
-
+	
 	public int getId()
 	{
 		return this.id;
@@ -23,7 +23,7 @@ public class Alarm
 	public boolean step(float delta)
 	{
 		boolean remove = false;
-		this.total += (delta * 1000f);
+		this.total += (delta * 1E3f);
 		
 		if (this.total >= this.time)
 		{
