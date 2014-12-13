@@ -7,7 +7,9 @@ import android.content.IntentSender.SendIntentException;
 import android.graphics.Typeface;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
@@ -29,6 +31,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 	private Game game;
 	private GLSurfaceView screen;
 	private GoogleApiClient apiClient;
+	private LinearLayout helpScreen;
 	private boolean intentInProgress = false;
 	private boolean openingLeaderboard = false;
 	
@@ -39,23 +42,43 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 	private static final int ACHIVEMENT_3 = 50;
 	private static final int ACHIVEMENT_4 = 100;
 	private static final int ACHIVEMENT_5 = 200;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-
+		
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 		Window window = getWindow();
+		window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
+		
 		FrameLayout layout = new FrameLayout(this);
 		FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 		layout.setLayoutParams(layoutParams);
 		
 		Typeface font = Typeface.createFromAsset(getAssets(), "fonts/visitor.ttf");
-
+		
+		this.helpScreen = (LinearLayout)View.inflate(this, R.layout.how_to_play, null);
+		this.helpScreen.setOnTouchListener(new OnTouchListener()
+		{
+			@Override
+			public boolean onTouch(View view, MotionEvent event)
+			{
+				MainActivity.this.helpScreen.setVisibility(View.GONE);
+				
+				return true;
+			}
+		});
+		
+		setFontTextView((TextView)this.helpScreen.findViewById(R.id.label_how_to_play_1), font);
+		setFontTextView((TextView)this.helpScreen.findViewById(R.id.label_how_to_play_2), font);
+		setFontTextView((TextView)this.helpScreen.findViewById(R.id.label_left_input), font);
+		setFontTextView((TextView)this.helpScreen.findViewById(R.id.label_right_input), font);
+		
+		this.helpScreen.setVisibility(View.GONE);
+		
 		LinearLayout blockScreen = (LinearLayout)View.inflate(this, R.layout.block_screen, null);
 		blockScreen.setVisibility(View.GONE);
 		
@@ -65,21 +88,22 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 		setFontTextView((TextView)blockScreen.findViewById(R.id.best), font);
 		
 		this.game = new Game(this, blockScreen);
-
+		
 		this.screen = new GLSurfaceView(this);
 		this.screen.setEGLContextClientVersion(2);
 		
 		Renderer renderer = new Renderer(this.game, this, this.screen);
 		this.screen.setRenderer(renderer);
-
+		
 		layout.addView(this.screen);
 		layout.addView(blockScreen);
-
+		layout.addView(this.helpScreen);
+		
 		setContentView(layout);
-
+		
 		Preferences.initialize(this);
 		Statistics.sendHitAppLaunched();
-
+		
 		GoogleApiClient.Builder builder = new GoogleApiClient.Builder(this, this, this);
 		builder.addApi(Games.API).addScope(Games.SCOPE_GAMES);
 		this.apiClient = builder.build();
@@ -88,27 +112,38 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 		{
 			this.apiClient.connect();
 		}
+		
+		if (Preferences.isFirstLaunch())
+		{
+			Preferences.setFirstLaunch();
+			displayHelp();
+		}
 	}
-
+	
+	public void displayHelp()
+	{
+		this.helpScreen.setVisibility(View.VISIBLE);
+	}
+	
 	@Override
 	public void onConnected(Bundle connectionHint)
 	{
 		Preferences.setConnectedPlayGameServices();
-
+		
 		if (this.openingLeaderboard)
 		{
 			submitScore(Preferences.getBestScore());
-
+			
 			showRanking();
 		}
 	}
-
+	
 	@Override
 	public void onConnectionSuspended(int cause)
 	{
 		this.apiClient.reconnect();
 	}
-
+	
 	@Override
 	public void onConnectionFailed(ConnectionResult result)
 	{
@@ -126,14 +161,14 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 			}
 		}
 	}
-
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
 		if (requestCode == MainActivity.REQUEST_RESOLVE_ERROR)
 		{
 			this.intentInProgress = false;
-
+			
 			if (resultCode == Activity.RESULT_OK)
 			{
 				if ((!this.apiClient.isConnecting()) && (!this.apiClient.isConnected()))
@@ -172,7 +207,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 			}
 		}
 	}
-
+	
 	public void showRanking()
 	{
 		if (this.apiClient.isConnected())
@@ -207,7 +242,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 		{
 			this.game.resume();
 		}
-
+		
 		if (this.screen != null)
 		{
 			this.screen.onResume();
@@ -229,7 +264,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 			this.screen.onPause();
 		}
 	}
-
+	
 	@Override
 	protected void onDestroy()
 	{
@@ -242,7 +277,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 		{
 			this.apiClient.disconnect();
 		}
-
+		
 		super.onDestroy();
 	}
 }

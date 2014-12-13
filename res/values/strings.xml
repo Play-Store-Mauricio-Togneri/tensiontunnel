@@ -16,4 +16,10 @@
     <string name="label_score">SCORE:</string>
 	<string name="label_best">BEST:</string>
     
+	<string name="label_how_to_play_1">Fly across the tunnel avoiding the obstacles</string>
+	<string name="label_how_to_play_2">Brown boxes can be good or bad powre ups</string>
+	
+	<string name="label_left_input">Press left to jump</string>
+	<string name="label_right_input">Press right to accelerate</string>
+	
 </resources>

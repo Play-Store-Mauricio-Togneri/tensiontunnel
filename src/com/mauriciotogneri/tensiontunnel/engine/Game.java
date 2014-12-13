@@ -52,7 +52,7 @@ public class Game
 	private PowerUp currentPowerUp = null;
 	
 	private Wall lastWall = null;
-
+	
 	private float wallWidth;
 	private float wallGap;
 	
@@ -64,11 +64,11 @@ public class Game
 	// TODO: CHANGE
 	private boolean enemyShootingBottom = true;
 	private boolean enemyRotatingOpposite = true;
-
+	
 	private static Game INSTANCE = null;
-
+	
 	private static final int POWER_UP_TIME_LIMIT = 5;
-
+	
 	private static final float GAME_SPEED_NORMAL = 1;
 	private static final float GAME_SPEED_SLOW = 0.5f;
 	
@@ -99,7 +99,7 @@ public class Game
 	{
 		INIT, RUNNING, COLLIDE
 	}
-
+	
 	private enum PowerUp
 	{
 		INVULNERABILITY(true), SLOW_TIME(true), FAST_SPEED(false), HEAVIER(false);
@@ -150,6 +150,16 @@ public class Game
 			}
 		});
 		
+		ImageView help = (ImageView)blockScreen.findViewById(R.id.help);
+		help.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public void onClick(View view)
+			{
+				displayHelp();
+			}
+		});
+		
 		AudioManager.initialize(mainActivity);
 		AudioManager.getInstance().playAudio(Resources.Music.MUSIC);
 	}
@@ -180,6 +190,11 @@ public class Game
 		this.mainActivity.showRanking();
 	}
 	
+	private void displayHelp()
+	{
+		this.mainActivity.displayHelp();
+	}
+	
 	public void start(Renderer renderer)
 	{
 		if (this.renderer == null)
@@ -199,27 +214,27 @@ public class Game
 		synchronized (this.lockRestart)
 		{
 			this.status = Status.INIT;
-
+			
 			hideBlockScreen();
-
+			
 			this.processes.clear();
-
+			
 			this.player.reset();
 			this.score.clear();
-
+			
 			this.wallWidth = Game.WALL_WIDTH_INIT_VALUE;
 			this.wallGap = Renderer.RESOLUTION_Y / Game.WALL_GAP_INIT_RATIO;
-
+			
 			this.beamSpeed = Game.BEAM_SPEED_INIT_VALUE;
 			this.beamFrequency = Game.BEAM_FREQUENCY_INIT_VALUE;
-
+			
 			this.rotationSpeed = Game.ROTATION_SPEED_INIT_VALUE;
-
+			
 			this.currentPowerUp = null;
 			this.powerUpTimer = 0;
-
+			
 			this.lastWall = null;
-
+			
 			createWall();
 			createEnemy();
 			createWall();
@@ -440,16 +455,16 @@ public class Game
 	{
 		Process[] list = new Process[this.processes.size()];
 		this.processes.toArray(list);
-
+		
 		float distance = getDistance(delta, input);
 		
 		this.background.update(distance);
-
+		
 		float gameSpeed = (this.currentPowerUp == PowerUp.SLOW_TIME) ? Game.GAME_SPEED_SLOW : Game.GAME_SPEED_NORMAL;
 		updateProcesses(list, delta, distance, gameSpeed);
 		
 		updatePlayer(delta, input);
-
+		
 		this.powerUpTimer += delta;
 		
 		if ((this.currentPowerUp != null) && (this.powerUpTimer > Game.POWER_UP_TIME_LIMIT))
@@ -465,7 +480,7 @@ public class Game
 			
 			this.currentPowerUp = null;
 		}
-
+		
 		checkCollision(list, input);
 	}
 	
@@ -524,7 +539,7 @@ public class Game
 					box.finish();
 					
 					this.currentPowerUp = PowerUp.values()[random(0, PowerUp.values().length - 1)];
-
+					
 					if (this.currentPowerUp.isGood())
 					{
 						AudioManager.getInstance().playSound(Resources.Sounds.POWER_UP_GOOD);
@@ -533,7 +548,7 @@ public class Game
 					{
 						AudioManager.getInstance().playSound(Resources.Sounds.POWER_UP_BAD);
 					}
-
+					
 					if (this.currentPowerUp == PowerUp.INVULNERABILITY)
 					{
 						this.player.setInvulnerable(true);
@@ -542,7 +557,7 @@ public class Game
 					{
 						this.player.setHeavier(true);
 					}
-
+					
 					this.powerUpTimer = 0;
 					removeAllBoxes(list);
 					break;
@@ -550,7 +565,7 @@ public class Game
 			}
 		}
 	}
-
+	
 	private void removeAllBoxes(Process[] list)
 	{
 		for (Process process : list)
@@ -562,7 +577,7 @@ public class Game
 			}
 		}
 	}
-
+	
 	private boolean collideWithElement(Process[] list)
 	{
 		boolean result = false;
@@ -585,7 +600,7 @@ public class Game
 				if (process instanceof EnemyShooting)
 				{
 					EnemyShooting enemy = (EnemyShooting)process;
-
+					
 					if (enemy.collide(this.player))
 					{
 						result = true;
@@ -596,7 +611,7 @@ public class Game
 				else if (process instanceof EnemyRotating)
 				{
 					EnemyRotating enemy = (EnemyRotating)process;
-
+					
 					if (enemy.collide(this.player))
 					{
 						result = true;
@@ -607,7 +622,7 @@ public class Game
 				else if (process instanceof Beam)
 				{
 					Beam beam = (Beam)process;
-
+					
 					if (beam.collide(this.player))
 					{
 						result = true;

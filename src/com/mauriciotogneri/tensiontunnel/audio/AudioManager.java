@@ -1,6 +1,5 @@
 package com.mauriciotogneri.tensiontunnel.audio;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,19 +18,19 @@ public class AudioManager
 	private final Map<String, Integer> soundsMap;
 	private MediaPlayer player;
 	private int audioPosition = 0;
-
+	
 	private static AudioManager instance;
-
+	
 	public static void initialize(Context context)
 	{
 		AudioManager.instance = new AudioManager(context);
 	}
-
+	
 	public static AudioManager getInstance()
 	{
 		return AudioManager.instance;
 	}
-
+	
 	private AudioManager(Context context)
 	{
 		this.context = context;
@@ -51,18 +50,18 @@ public class AudioManager
 			}
 		});
 	}
-
+	
 	private void loadSound(String soundPath)
 	{
 		AssetFileDescriptor assetDescriptor = null;
-
+		
 		try
 		{
 			assetDescriptor = this.context.getAssets().openFd(soundPath);
 			int resourceId = this.soundPool.load(assetDescriptor, 1);
 			this.soundsMap.put(soundPath, resourceId);
 		}
-		catch (IOException e)
+		catch (Exception e)
 		{
 		}
 		finally
@@ -70,7 +69,7 @@ public class AudioManager
 			closeDescriptor(assetDescriptor);
 		}
 	}
-
+	
 	public void playSound(String soundPath)
 	{
 		if (this.soundsMap.containsKey(soundPath))
@@ -87,13 +86,13 @@ public class AudioManager
 	{
 		this.soundPool.play(resourceId, 1f, 1f, 1, 0, 1f);
 	}
-
+	
 	public void playAudio(String audioPath)
 	{
 		stopMusic();
-
+		
 		AssetFileDescriptor assetDescriptor = null;
-
+		
 		try
 		{
 			assetDescriptor = this.context.getAssets().openFd(audioPath);
@@ -102,7 +101,7 @@ public class AudioManager
 			this.player.setDataSource(assetDescriptor.getFileDescriptor(), assetDescriptor.getStartOffset(), assetDescriptor.getLength());
 			this.player.setLooping(true);
 			this.player.setVolume(0.5f, 0.5f);
-
+			
 			this.player.setOnPreparedListener(new OnPreparedListener()
 			{
 				@Override
@@ -111,7 +110,7 @@ public class AudioManager
 					player.start();
 				}
 			});
-
+			
 			this.player.setOnCompletionListener(new OnCompletionListener()
 			{
 				@Override
@@ -120,48 +119,71 @@ public class AudioManager
 					player.release();
 				}
 			});
+			
 			this.player.prepare();
 		}
-		catch (IOException e)
+		catch (Exception e)
 		{
+			e.printStackTrace();
 		}
 		finally
 		{
 			closeDescriptor(assetDescriptor);
 		}
 	}
-
+	
 	private void stopMusic()
 	{
 		if (this.player != null)
 		{
-			this.player.stop();
-			this.player.release();
+			try
+			{
+				this.player.stop();
+				this.player.release();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
-
+	
 	public void resumeAudio()
 	{
-		if ((this.player != null) && (!this.player.isPlaying()))
+		try
 		{
-			this.player.seekTo(this.audioPosition);
-			this.player.start();
+			if ((this.player != null) && (!this.player.isPlaying()))
+			{
+				this.player.seekTo(this.audioPosition);
+				this.player.start();
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
 		}
 	}
-
+	
 	public void pauseAudio()
 	{
 		if (this.player != null)
 		{
-			this.player.pause();
-			this.audioPosition = this.player.getCurrentPosition();
+			try
+			{
+				this.player.pause();
+				this.audioPosition = this.player.getCurrentPosition();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
-
+	
 	public void stopAudio()
 	{
 		stopMusic();
-
+		
 		if (this.soundPool != null)
 		{
 			Collection<Integer> soundsIds = this.soundsMap.values();
@@ -170,11 +192,11 @@ public class AudioManager
 			{
 				this.soundPool.unload(soundId);
 			}
-
+			
 			this.soundPool.release();
 		}
 	}
-
+	
 	public boolean isAudioPlaying()
 	{
 		return ((this.player != null) && this.player.isPlaying());
@@ -188,7 +210,7 @@ public class AudioManager
 			{
 				assetDescriptor.close();
 			}
-			catch (IOException e)
+			catch (Exception e)
 			{
 			}
 		}
