@@ -12,6 +12,7 @@ How to play
 
 * Brown boxes can be good or bad power-ups.
 
+
 [![Get it on Google Play](http://mauriciotogneri.com/images/badge.png)](https://play.google.com/store/apps/details?id=com.mauriciotogneri.tensiontunnel)
 
 Screenshots
