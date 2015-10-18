@@ -19,5 +19,6 @@ RELEASE_KEY_ALIAS      = ???
 RELEASE_KEY_PASSWORD   = ???
 RELEASE_STORE_PASSWORD = ???
 RELEASE_STORE_FILE     = ???
+```
 
 [![Get it on Google Play](http://mauriciotogneri.com/images/badge.png)](https://play.google.com/store/apps/details?id=com.mauriciotogneri.tensiontunnel)
