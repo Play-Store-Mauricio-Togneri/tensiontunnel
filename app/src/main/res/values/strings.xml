@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Tension Tunnel</string>
+
+    <string name="games_api_id">1058582822210</string>
+    <string name="achievement_10_points">CgkIwvrPw-ceEAIQAg</string>
+ 	<string name="achievement_20_points">CgkIwvrPw-ceEAIQAw</string>
+  	<string name="achievement_50_points">CgkIwvrPw-ceEAIQBA</string>
+  	<string name="achievement_100_points">CgkIwvrPw-ceEAIQBQ</string>
+  	<string name="achievement_200_points">CgkIwvrPw-ceEAIQBg</string>
+  	<string name="leaderboard_high_score">CgkIwvrPw-ceEAIQAQ</string>
+    
+    <string name="label_score">SCORE:</string>
+	<string name="label_best">BEST:</string>
+    
+	<string name="label_how_to_play_1">Fly across the tunnel avoiding the obstacles</string>
+	<string name="label_how_to_play_2">Brown boxes can be good or bad power-ups</string>
+	
+	<string name="label_left_input">Press left to jump</string>
+	<string name="label_right_input">Press right to accelerate</string>
+	
+</resources>
