@@ -2,8 +2,6 @@ package com.mauriciotogneri.tensiontunnel.activities;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Intent;
-import android.content.IntentSender.SendIntentException;
 import android.graphics.Typeface;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -17,9 +15,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.games.Games;
 import com.mauriciotogneri.tensiontunnel.R;
 import com.mauriciotogneri.tensiontunnel.engine.Game;
 import com.mauriciotogneri.tensiontunnel.engine.Renderer;
@@ -27,22 +22,11 @@ import com.mauriciotogneri.tensiontunnel.statistics.Statistics;
 import com.mauriciotogneri.tensiontunnel.util.Preferences;
 
 @SuppressLint("ClickableViewAccessibility")
-public class MainActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
+public class MainActivity extends Activity
 {
     private Game game;
     private GLSurfaceView screen;
-    private GoogleApiClient apiClient;
     private LinearLayout helpScreen;
-    private boolean intentInProgress = false;
-    private boolean openingLeaderboard = false;
-
-    private static final int REQUEST_RESOLVE_ERROR = 1001;
-
-    private static final int ACHIEVEMENT_1 = 10;
-    private static final int ACHIEVEMENT_2 = 20;
-    private static final int ACHIEVEMENT_3 = 50;
-    private static final int ACHIEVEMENT_4 = 100;
-    private static final int ACHIEVEMENT_5 = 200;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -105,15 +89,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         Preferences.initialize(this);
         Statistics.sendHitAppLaunched();
 
-        GoogleApiClient.Builder builder = new GoogleApiClient.Builder(this, this, this);
-        builder.addApi(Games.API).addScope(Games.SCOPE_GAMES);
-        this.apiClient = builder.build();
-
-        if (Preferences.isConnectedPlayGameServices())
-        {
-            this.apiClient.connect();
-        }
-
         if (Preferences.isFirstLaunch())
         {
             Preferences.setFirstLaunch();
@@ -124,103 +99,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     public void displayHelp()
     {
         this.helpScreen.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onConnected(Bundle connectionHint)
-    {
-        Preferences.setConnectedPlayGameServices();
-
-        if (this.openingLeaderboard)
-        {
-            submitScore(Preferences.getBestScore());
-
-            showRanking();
-        }
-    }
-
-    @Override
-    public void onConnectionSuspended(int cause)
-    {
-        this.apiClient.reconnect();
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult result)
-    {
-        if ((!this.intentInProgress) && result.hasResolution())
-        {
-            try
-            {
-                this.intentInProgress = true;
-                result.startResolutionForResult(this, MainActivity.REQUEST_RESOLVE_ERROR);
-            }
-            catch (SendIntentException e)
-            {
-                this.intentInProgress = false;
-                this.apiClient.connect();
-            }
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        if (requestCode == MainActivity.REQUEST_RESOLVE_ERROR)
-        {
-            this.intentInProgress = false;
-
-            if (resultCode == Activity.RESULT_OK)
-            {
-                if ((!this.apiClient.isConnecting()) && (!this.apiClient.isConnected()))
-                {
-                    this.apiClient.connect();
-                }
-            }
-        }
-    }
-
-    public void submitScore(int score)
-    {
-        if (this.apiClient.isConnected())
-        {
-            Games.Leaderboards.submitScore(this.apiClient, getString(R.string.leaderboard_high_score), score);
-
-            if (score >= MainActivity.ACHIEVEMENT_5)
-            {
-                Games.Achievements.unlock(this.apiClient, getString(R.string.achievement_200_points));
-            }
-            else if (score >= MainActivity.ACHIEVEMENT_4)
-            {
-                Games.Achievements.unlock(this.apiClient, getString(R.string.achievement_100_points));
-            }
-            else if (score >= MainActivity.ACHIEVEMENT_3)
-            {
-                Games.Achievements.unlock(this.apiClient, getString(R.string.achievement_50_points));
-            }
-            else if (score >= MainActivity.ACHIEVEMENT_2)
-            {
-                Games.Achievements.unlock(this.apiClient, getString(R.string.achievement_20_points));
-            }
-            else if (score >= MainActivity.ACHIEVEMENT_1)
-            {
-                Games.Achievements.unlock(this.apiClient, getString(R.string.achievement_10_points));
-            }
-        }
-    }
-
-    public void showRanking()
-    {
-        if (this.apiClient.isConnected())
-        {
-            this.openingLeaderboard = false;
-            startActivityForResult(Games.Leaderboards.getLeaderboardIntent(this.apiClient, getString(R.string.leaderboard_high_score)), 456);
-        }
-        else
-        {
-            this.openingLeaderboard = true;
-            this.apiClient.connect();
-        }
     }
 
     private void setFontTextView(TextView textView, Typeface font)
@@ -273,11 +151,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         if (this.game != null)
         {
             this.game.stop();
-        }
-
-        if ((this.apiClient != null) && this.apiClient.isConnected())
-        {
-            this.apiClient.disconnect();
         }
 
         super.onDestroy();

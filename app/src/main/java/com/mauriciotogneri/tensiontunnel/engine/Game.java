@@ -135,16 +135,6 @@ public class Game
             }
         });
 
-        ImageView ranking = (ImageView) blockScreen.findViewById(R.id.ranking);
-        ranking.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                showRanking();
-            }
-        });
-
         ImageView help = (ImageView) blockScreen.findViewById(R.id.help);
         help.setOnClickListener(new OnClickListener()
         {
@@ -178,11 +168,6 @@ public class Game
     {
         Vibrator vibrator = (Vibrator) this.mainActivity.getSystemService(Context.VIBRATOR_SERVICE);
         vibrator.vibrate(300);
-    }
-
-    private void showRanking()
-    {
-        this.mainActivity.showRanking();
     }
 
     private void displayHelp()
@@ -262,8 +247,6 @@ public class Game
 
             Preferences.setBestScore(bestScore);
         }
-
-        this.mainActivity.submitScore(bestScore);
 
         TextView scoreView = (TextView) this.blockScreen.findViewById(R.id.score);
         scoreView.setText(String.valueOf(currentScore));

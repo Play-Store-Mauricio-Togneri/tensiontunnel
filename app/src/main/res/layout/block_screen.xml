@@ -86,17 +86,6 @@
                 android:src="@drawable/help"/>
 
             <ImageView
-                android:id="@+id/ranking"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginStart="10dp"
-                android:background="@drawable/border_button_ranking"
-                android:src="@drawable/ranking"/>
-
-            <ImageView
                 android:id="@+id/play"
                 android:layout_width="72dp"
                 android:layout_height="72dp"
