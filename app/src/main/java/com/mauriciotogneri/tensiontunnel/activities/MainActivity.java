@@ -18,7 +18,6 @@ import android.widget.TextView;
 import com.mauriciotogneri.tensiontunnel.R;
 import com.mauriciotogneri.tensiontunnel.engine.Game;
 import com.mauriciotogneri.tensiontunnel.engine.Renderer;
-import com.mauriciotogneri.tensiontunnel.statistics.Statistics;
 import com.mauriciotogneri.tensiontunnel.util.Preferences;
 
 @SuppressLint("ClickableViewAccessibility")
@@ -87,7 +86,6 @@ public class MainActivity extends Activity
         setContentView(layout);
 
         Preferences.initialize(this);
-        Statistics.sendHitAppLaunched();
 
         if (Preferences.isFirstLaunch())
         {

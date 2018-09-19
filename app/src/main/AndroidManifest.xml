@@ -12,7 +12,6 @@
     <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
-        android:name=".activities.TensionTunnel"
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:icon="@drawable/app_icon"
@@ -30,18 +29,6 @@
             </intent-filter>
 
         </activity>
-
-        <meta-data
-            android:name="com.google.android.gms.games.APP_ID"
-            android:value="@string/games_api_id"/>
-
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version"/>
-
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="8cffce1302373dfaa1df9a1eaa9097d3bf4520fc"/>
 
     </application>
 

@@ -23,8 +23,6 @@ import com.mauriciotogneri.tensiontunnel.objects.enemies.shooting.EnemyShooting;
 import com.mauriciotogneri.tensiontunnel.objects.enemies.shooting.EnemyShootingBottom;
 import com.mauriciotogneri.tensiontunnel.objects.enemies.shooting.EnemyShootingTop;
 import com.mauriciotogneri.tensiontunnel.objects.score.Score;
-import com.mauriciotogneri.tensiontunnel.statistics.Statistics;
-import com.mauriciotogneri.tensiontunnel.statistics.Statistics.CollisionType;
 import com.mauriciotogneri.tensiontunnel.util.Preferences;
 import com.mauriciotogneri.tensiontunnel.util.Resources;
 
@@ -417,7 +415,6 @@ public class Game
             if ((this.status == Status.INIT) && (input.jumpPressed || input.advancePressed))
             {
                 this.status = Status.RUNNING;
-                Statistics.sendHitNewGame();
             }
 
             if (this.status == Status.RUNNING)
@@ -493,7 +490,6 @@ public class Game
     {
         if (this.background.collide(this.player))
         {
-            Statistics.sendHitCollision(CollisionType.BACKGROUND);
             processCollision(input);
         }
         else if (collideWithElement(list))
@@ -569,7 +565,6 @@ public class Game
                 if (wall.collide(this.player))
                 {
                     result = true;
-                    Statistics.sendHitCollision(CollisionType.WALL);
                     break;
                 }
             }
@@ -582,7 +577,6 @@ public class Game
                     if (enemy.collide(this.player))
                     {
                         result = true;
-                        Statistics.sendHitCollision(CollisionType.ENEMY_SHOOTING);
                         break;
                     }
                 }
@@ -593,7 +587,6 @@ public class Game
                     if (enemy.collide(this.player))
                     {
                         result = true;
-                        Statistics.sendHitCollision(CollisionType.ENEMY_ROTATING);
                         break;
                     }
                 }
@@ -604,7 +597,6 @@ public class Game
                     if (beam.collide(this.player))
                     {
                         result = true;
-                        Statistics.sendHitCollision(CollisionType.BEAM);
                         break;
                     }
                 }
